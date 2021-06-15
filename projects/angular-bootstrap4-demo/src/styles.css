@@ -1,0 +1,9 @@
+/* You can add global styles to this file, and also import other style files */
+@import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
+h3.page-header, h4.page-header {
+    padding-top: 60px;
+    padding-bottom: 9px;
+    margin: 0 0 20px;
+    border-bottom: 1px solid #eee;
+}

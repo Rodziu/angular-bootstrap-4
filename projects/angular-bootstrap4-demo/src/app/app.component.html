@@ -1,0 +1,144 @@
+<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="#">AngularJS Bootstrap</a>
+        <button class="navbar-toggler" type="button" (click)="navbar=!navbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" bs-collapse="navbar">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item" *ngFor="let n of nav">
+                    <a class="nav-link" href="#{{n}}">{{n}}</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <section id="Modal">
+        <h3 class="page-header border-bottom">Modal</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <button class="btn btn-outline-primary btn-lg"
+                        (click)="modal.exampleModal = !modal.exampleModal">Launch demo modal
+                </button>
+                <br/><br/>
+                <div class="radio">
+                    <label>
+                        <input type="radio" [(ngModel)]="modal.backdrop" value="static"/> 'static' backdrop
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" [(ngModel)]="modal.backdrop" [value]="true"/> clickable backdrop
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" [(ngModel)]="modal.backdrop" [value]="false"/> no backdrop
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" [(ngModel)]="modal.keyboard"/> keyboard
+                    </label>
+                </div>
+                <div class="checkbox">
+                    <label>
+                        <input type="checkbox" [(ngModel)]="modal.preventModalOpen"/> preventModalOpen
+                    </label>
+                </div>
+                <div class="modal fade" [(bsModal)]="modal.exampleModal" [backdrop]="modal.backdrop"
+                     [keyboard]="modal.keyboard" [onBeforeChange]="modal.beforeChange" #bsModalApi=bsModal>
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">ExampleModal</h5>
+                                <button type="button" class="close" dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <button type="button" class="btn btn-primary btn-large"
+                                        (click)="modal.nestedModal=true">
+                                    Show nested modal
+                                </button>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" (click)="bsModalApi.hide()">
+                                    Dismiss
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" [(bsModal)]="modal.nestedModal">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Nested modal</h5>
+                                <button type="button" class="close" dismiss="modal" aria-label="Close"><span
+                                        aria-hidden="true">&times;</span></button>
+                            </div>
+                            <div class="modal-body">
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" dismiss="modal">Dismiss</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+                <table class="table table-bordered table-striped js-options-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>type</th>
+                            <th>default</th>
+                            <th>description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>backdrop</td>
+                            <td>boolean or the string <code>'static'</code></td>
+                            <td>'static'</td>
+                            <td>Includes a modal-backdrop element. Alternatively, specify <code>static</code> for a
+                                backdrop
+                                which doesn't close the modal on click.
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>keyboard</td>
+                            <td>boolean</td>
+                            <td>true</td>
+                            <td>Closes the modal when escape key is pressed</td>
+                        </tr>
+                        <tr>
+                            <td>onBeforeChange</td>
+                            <td>function</td>
+                            <td>undefined</td>
+                            <td>Function that gets called before every change of modal state.
+                                If this function returns false, action is prevented.
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="4">
+                                <small>All option defaults are configurable in 'BsModalConfigService'
+                                    and can be changed via bindings.
+                                </small>
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                <pre>
+&lt;div class="modal fade" <strong>[(bsModal)]="modal.exampleModal" [keyboard]="modal.keyboard" [onBeforeChange]="modal.beforeChange" #bsModalApi=bsModal</strong>&gt;
+...
+&lt;/div&gt;</pre>
+            </div>
+        </div>
+    </section>
+</div>

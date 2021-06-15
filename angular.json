@@ -1,0 +1,133 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "angular-bootstrap4": {
+      "projectType": "library",
+      "root": "projects/angular-bootstrap4",
+      "sourceRoot": "projects/angular-bootstrap4/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/angular-bootstrap4/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/angular-bootstrap4/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/angular-bootstrap4/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/angular-bootstrap4/**/*.ts",
+              "projects/angular-bootstrap4/**/*.html"
+            ]
+          }
+        }
+      }
+    },
+    "angular-bootstrap4-demo": {
+      "projectType": "application",
+      "schematics": {
+        "@schematics/angular:application": {
+          "strict": true
+        }
+      },
+      "root": "projects/angular-bootstrap4-demo",
+      "sourceRoot": "projects/angular-bootstrap4-demo/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-builders/custom-webpack:browser",
+          "options": {
+            "customWebpackConfig": {
+              "path": "./extra-webpack.config.js"
+            },
+            "outputPath": "demo",
+            "index": "projects/angular-bootstrap4-demo/src/index.html",
+            "main": "projects/angular-bootstrap4-demo/src/main.ts",
+            "polyfills": "projects/angular-bootstrap4-demo/src/polyfills.ts",
+            "tsConfig": "projects/angular-bootstrap4-demo/tsconfig.app.json",
+            "assets": [
+              "projects/angular-bootstrap4-demo/src/favicon.ico",
+              "projects/angular-bootstrap4-demo/src/assets"
+            ],
+            "styles": [
+              "projects/angular-bootstrap4-demo/src/styles.css"
+            ],
+            "scripts": []
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "fileReplacements": [
+                {
+                  "replace": "projects/angular-bootstrap4-demo/src/environments/environment.ts",
+                  "with": "projects/angular-bootstrap4-demo/src/environments/environment.prod.ts"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "buildOptimizer": false,
+              "optimization": false,
+              "vendorChunk": true,
+              "extractLicenses": false,
+              "sourceMap": true,
+              "namedChunks": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "browserTarget": "angular-bootstrap4-demo:build:production"
+            },
+            "development": {
+              "browserTarget": "angular-bootstrap4-demo:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "browserTarget": "angular-bootstrap4-demo:build"
+          }
+        },
+        "lint": {
+          "builder": "@angular-eslint/builder:lint",
+          "options": {
+            "lintFilePatterns": [
+              "projects/angular-bootstrap4-demo/**/*.ts",
+              "projects/angular-bootstrap4-demo/**/*.html"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "defaultProject": "angular-bootstrap4"
+}
