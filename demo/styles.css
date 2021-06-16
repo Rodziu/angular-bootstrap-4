@@ -1212,6 +1212,9 @@ h3.page-header, h4.page-header {
     margin: 0 0 20px;
     border-bottom: 1px solid #eee;
 }
+[bsDropdownBoundary], [bsPopoverBoundary], [bsTooltipBoundary] {
+    border: 1px solid red;
+}
 
 
 /*# sourceMappingURL=styles.css.map*/

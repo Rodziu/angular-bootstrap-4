@@ -22,4 +22,8 @@ export class AppComponent {
             return !this.modal.preventModalOpen;
         }
     };
+
+    dropdown = false;
+    dropdown2 = false;
+    dropdown3 = false;
 }

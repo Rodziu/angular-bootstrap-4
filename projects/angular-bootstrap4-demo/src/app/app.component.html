@@ -141,4 +141,81 @@
             </div>
         </div>
     </section>
+    <section id="Dropdown">
+        <h3 class="page-header">Dropdown</h3>
+        <div class="row">
+            <div class="col-md-4">
+                <div [(bsDropdown)]="dropdown">
+                    <button bsDropdownToggle class="btn btn-outline-primary dropdown-toggle">
+                        Toggle dropdown
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="#">Action</a></li>
+                        <li><a class="dropdown-item" href="#">Another action</a></li>
+                        <li><a class="dropdown-item" href="#">Something else here</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-md-8">
+				<pre>&lt;div <strong>[(bsDropdown)]="dropdown"</strong>&gt;
+	&lt;button <strong>bsDropdownToggle</strong> class="btn btn-primary dropdown-toggle"&gt;Toggle dropdown&lt;/button&gt;
+	&lt;ul class="dropdown-menu"&gt;
+		&lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Action&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Another action&lt;/a&gt;&lt;/li&gt;
+		&lt;li&gt;&lt;a class="dropdown-item" href="#"&gt;Something else here&lt;/a&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+&lt;/div&gt;</pre>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <a href="javascript:" (click)="dropdown=true;$event.stopPropagation()">
+                    Show dropdown by binding
+                </a>
+            </div>
+            <div class="col-md-8">
+                <pre>&lt;a <strong>(click)="dropdown=true;$event.stopPropagation()"</strong>&gt;Show dropdown by binding&lt;/a&gt;</pre>
+            </div>
+        </div>
+        <h4 class="page-header">Auto placement & boundary element</h4>
+        <p class="help-block">
+            Dropdown will be converted to 'dropup' if it would overflow given boundary element (red border).
+        </p>
+        <div class="row">
+            <div class="col-md-4">
+                <div bsDropdownBoundary style="height: 200px" class="d-flex flex-column">
+                    <div [(bsDropdown)]="dropdown2">
+                        <button bsDropdownToggle class="btn btn-outline-primary dropdown-toggle">
+                            Toggle dropdown
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </div>
+                    <div [(bsDropdown)]="dropdown3" class="mt-auto">
+                        <button bsDropdownToggle class="btn btn-outline-primary dropdown-toggle">
+                            Toggle dropdown
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#">Action</a></li>
+                            <li><a class="dropdown-item" href="#">Another action</a></li>
+                            <li><a class="dropdown-item" href="#">Something else here</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-8">
+		<pre>&lt;div <strong>bsDropdownBoundary</strong>&gt;
+	&lt;div [(bsDropdown)]...&gt;
+		...
+	&lt;/div&gt;
+&lt;/div&gt;</pre>
+            </div>
+        </div>
+        <p class="help-block mt-3">
+            Optionally, you can pass boundary element (elementRef) via 'boundaryElement' binding.
+        </p>
+    </section>
 </div>

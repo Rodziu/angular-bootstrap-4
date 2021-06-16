@@ -10,6 +10,11 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AngularBootstrap4Module": () => (/* binding */ AngularBootstrap4Module),
+/* harmony export */   "BsDropdownBoundaryDirective": () => (/* binding */ BsDropdownBoundaryDirective),
+/* harmony export */   "BsDropdownDirective": () => (/* binding */ BsDropdownDirective),
+/* harmony export */   "BsDropdownModule": () => (/* binding */ BsDropdownModule),
+/* harmony export */   "BsDropdownToggleDirective": () => (/* binding */ BsDropdownToggleDirective),
+/* harmony export */   "BsHelpersModule": () => (/* binding */ BsHelpersModule),
 /* harmony export */   "BsModalConfigService": () => (/* binding */ BsModalConfigService),
 /* harmony export */   "BsModalDirective": () => (/* binding */ BsModalDirective),
 /* harmony export */   "BsModalModule": () => (/* binding */ BsModalModule),
@@ -22,522 +27,614 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-const _c0 = function (a0) {
-  return {
-    "fade": a0
-  };
-};
-
 class BsModalConfigService {
-  constructor() {
-    this.backdrop = 'static';
-    this.keyboard = true;
-    this.transitionDuration = 300;
-    this.backdropTransitionDuration = 150;
-
-    this.onBeforeChange = () => true;
-  }
-
+    constructor() {
+        this.backdrop = 'static';
+        this.keyboard = true;
+        this.transitionDuration = 300;
+        this.backdropTransitionDuration = 150;
+        this.onBeforeChange = () => true;
+    }
 }
+BsModalConfigService.ɵfac = function BsModalConfigService_Factory(t) { return new (t || BsModalConfigService)(); };
+BsModalConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsModalConfigService, factory: BsModalConfigService.ɵfac, providedIn: 'root' });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalConfigService, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], null, null); })();
 
-BsModalConfigService.ɵfac = function BsModalConfigService_Factory(t) {
-  return new (t || BsModalConfigService)();
-};
-
-BsModalConfigService.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
-  token: BsModalConfigService,
-  factory: BsModalConfigService.ɵfac,
-  providedIn: 'root'
-});
-
-(function () {
-  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalConfigService, [{
-    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
-    args: [{
-      providedIn: 'root'
-    }]
-  }], null, null);
-})();
-
+const _c0 = function (a0) { return { "fade": a0 }; };
 class BsModalBackdropComponent {
-  constructor(service, elementRef) {
-    this.service = service;
-    this.elementRef = elementRef;
-  }
-
-  getBackdropElement() {
-    return this.elementRef.nativeElement.children[0];
-  }
-
-  show() {
-    const backdropElement = this.getBackdropElement();
-    backdropElement.offsetWidth; // force reflow
-
-    backdropElement.classList.add('show');
-    backdropElement.style.display = '';
-  }
-
-  hide() {
-    return new Promise(resolve => {
-      const backdropElement = this.getBackdropElement();
-      backdropElement.classList.remove('show');
-
-      if (this.service.isAnimated) {
-        let transitionFinished = false;
-
-        const transition = function () {
-          if (!transitionFinished) {
-            resolve();
-            transitionFinished = true;
-            backdropElement.removeEventListener('transitionend', transition);
-            backdropElement.style.display = 'none';
-          }
-        };
-
-        backdropElement.addEventListener('transitionend', transition);
-        setTimeout(transition, 150);
-      } else {
-        resolve();
-      }
-    });
-  }
-
+    constructor(service, elementRef) {
+        this.service = service;
+        this.elementRef = elementRef;
+    }
+    getBackdropElement() {
+        return this.elementRef.nativeElement.children[0];
+    }
+    show() {
+        const backdropElement = this.getBackdropElement();
+        backdropElement.offsetWidth; // force reflow
+        backdropElement.classList.add('show');
+        backdropElement.style.display = '';
+    }
+    hide() {
+        return new Promise((resolve) => {
+            const backdropElement = this.getBackdropElement();
+            backdropElement.classList.remove('show');
+            if (this.service.isAnimated) {
+                let transitionFinished = false;
+                const transition = function () {
+                    if (!transitionFinished) {
+                        resolve();
+                        transitionFinished = true;
+                        backdropElement.removeEventListener('transitionend', transition);
+                        backdropElement.style.display = 'none';
+                    }
+                };
+                backdropElement.addEventListener('transitionend', transition);
+                setTimeout(transition, 150);
+            }
+            else {
+                resolve();
+            }
+        });
+    }
 }
-
-BsModalBackdropComponent.ɵfac = function BsModalBackdropComponent_Factory(t) {
-  return new (t || BsModalBackdropComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalBackdropService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef));
-};
-
-BsModalBackdropComponent.ɵcmp = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({
-  type: BsModalBackdropComponent,
-  selectors: [["bs-modal-backdrop"]],
-  decls: 1,
-  vars: 3,
-  consts: [[1, "modal-backdrop", 3, "ngClass"]],
-  template: function BsModalBackdropComponent_Template(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "div", 0);
-    }
-
-    if (rf & 2) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0, ctx.service.isAnimated));
-    }
-  },
-  directives: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass],
-  encapsulation: 2
-});
-
-(function () {
-  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalBackdropComponent, [{
-    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
-    args: [{
-      template: '<div class="modal-backdrop" [ngClass]="{\'fade\': service.isAnimated}"></div>',
-      selector: 'bs-modal-backdrop'
-    }]
-  }], function () {
-    return [{
-      type: BsModalBackdropService
-    }, {
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef
-    }];
-  }, null);
-})();
+BsModalBackdropComponent.ɵfac = function BsModalBackdropComponent_Factory(t) { return new (t || BsModalBackdropComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalBackdropService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef)); };
+BsModalBackdropComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: BsModalBackdropComponent, selectors: [["bs-modal-backdrop"]], decls: 1, vars: 3, consts: [[1, "modal-backdrop", 3, "ngClass"]], template: function BsModalBackdropComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "div", 0);
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0, ctx.service.isAnimated));
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass], encapsulation: 2 });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalBackdropComponent, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+        args: [{
+                template: '<div class="modal-backdrop" [ngClass]="{\'fade\': service.isAnimated}"></div>',
+                selector: 'bs-modal-backdrop'
+            }]
+    }], function () { return [{ type: BsModalBackdropService }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
 
 class BsModalBackdropService {
-  constructor(componentFactoryResolver, appRef, injector) {
-    this.componentFactoryResolver = componentFactoryResolver;
-    this.appRef = appRef;
-    this.injector = injector;
-    this.openModals = 0;
-    this._isAnimated = false;
-  }
-
-  get isAnimated() {
-    return this._isAnimated;
-  }
-
-  show(backdrop, animate) {
-    return new Promise(resolve => {
-      this.createBackdropComponent();
-      this.openModals++;
-      this._isAnimated = animate;
-      document.body.classList.add('modal-open');
-
-      if (backdrop) {
-        setTimeout(() => {
-          var _a;
-
-          (_a = this.backdropRef) === null || _a === void 0 ? void 0 : _a.instance.show();
-          resolve();
+    constructor(componentFactoryResolver, appRef, injector) {
+        this.componentFactoryResolver = componentFactoryResolver;
+        this.appRef = appRef;
+        this.injector = injector;
+        this.openModals = 0;
+        this._isAnimated = false;
+    }
+    get isAnimated() {
+        return this._isAnimated;
+    }
+    show(backdrop, animate) {
+        return new Promise((resolve) => {
+            this.createBackdropComponent();
+            this.openModals++;
+            this._isAnimated = animate;
+            document.body.classList.add('modal-open');
+            if (backdrop) {
+                setTimeout(() => {
+                    var _a;
+                    (_a = this.backdropRef) === null || _a === void 0 ? void 0 : _a.instance.show();
+                    resolve();
+                });
+            }
+            else {
+                resolve();
+            }
         });
-      } else {
-        resolve();
-      }
-    });
-  }
-
-  createBackdropComponent() {
-    if (typeof this.backdropRef !== 'undefined') {
-      return;
     }
-
-    const componentRef = this.componentFactoryResolver.resolveComponentFactory(BsModalBackdropComponent).create(this.injector);
-    this.appRef.attachView(componentRef.hostView);
-    document.body.appendChild(componentRef.hostView.rootNodes[0]);
-    this.backdropRef = componentRef;
-  }
-
-  hide() {
-    this.openModals--;
-
-    if (this.openModals < 0) {
-      this.openModals = 0;
+    createBackdropComponent() {
+        if (typeof this.backdropRef !== 'undefined') {
+            return;
+        }
+        const componentRef = this.componentFactoryResolver
+            .resolveComponentFactory(BsModalBackdropComponent)
+            .create(this.injector);
+        this.appRef.attachView(componentRef.hostView);
+        document.body.appendChild(componentRef.hostView
+            .rootNodes[0]);
+        this.backdropRef = componentRef;
     }
-
-    if (this.openModals === 0) {
-      const callback = () => {
-        document.body.classList.remove('modal-open');
-      };
-
-      if (this.backdropRef) {
-        this.backdropRef.instance.hide().then(callback);
-      } else {
-        callback();
-      }
+    hide() {
+        this.openModals--;
+        if (this.openModals < 0) {
+            this.openModals = 0;
+        }
+        if (this.openModals === 0) {
+            const callback = () => {
+                document.body.classList.remove('modal-open');
+            };
+            if (this.backdropRef) {
+                this.backdropRef.instance.hide().then(callback);
+            }
+            else {
+                callback();
+            }
+        }
     }
-  }
-
 }
-
-BsModalBackdropService.ɵfac = function BsModalBackdropService_Factory(t) {
-  return new (t || BsModalBackdropService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector));
-};
-
-BsModalBackdropService.ɵprov = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({
-  token: BsModalBackdropService,
-  factory: BsModalBackdropService.ɵfac,
-  providedIn: 'root'
-});
-
-(function () {
-  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalBackdropService, [{
-    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
-    args: [{
-      providedIn: 'root'
-    }]
-  }], function () {
-    return [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver
-    }, {
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef
-    }, {
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector
-    }];
-  }, null);
-})();
+BsModalBackdropService.ɵfac = function BsModalBackdropService_Factory(t) { return new (t || BsModalBackdropService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector)); };
+BsModalBackdropService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsModalBackdropService, factory: BsModalBackdropService.ɵfac, providedIn: 'root' });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalBackdropService, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector }]; }, null); })();
 
 class BsModalDirective {
-  constructor(config, backdropService, elementRef) {
-    this.config = config;
-    this.backdropService = backdropService;
-    this.elementRef = elementRef;
-    this._bsModal = false;
-    this.bsModalChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
-  }
-
-  get bsModal() {
-    return this._bsModal;
-  }
-
-  set bsModal(bsModal) {
-    if (bsModal === this._bsModal) {
-      return;
+    constructor(config, backdropService, elementRef) {
+        this.config = config;
+        this.backdropService = backdropService;
+        this.elementRef = elementRef;
+        this._bsModal = false;
+        this.bsModalChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
     }
-
-    const result = bsModal ? this.show() : this.hide();
-
-    if (!result) {
-      // not shown, prevented by shouldChange
-      setTimeout(() => {
-        this.bsModalChange.emit(!bsModal);
-      });
-      this._bsModal = !bsModal;
+    get bsModal() {
+        return this._bsModal;
     }
-  }
-
-  click(target) {
-    var _a;
-
-    if (((_a = window.getSelection()) === null || _a === void 0 ? void 0 : _a.type) === 'Range') {
-      return;
-    }
-
-    if (this.backdrop === true && target === this.elementRef.nativeElement) {
-      // .modal covers whole page
-      this.hide();
-    }
-  }
-
-  keydown() {
-    if (this.keyboard) {
-      this.hide();
-    }
-  }
-
-  ngOnInit() {
-    if (typeof this.backdrop === 'undefined') {
-      this.backdrop = this.config.backdrop;
-    }
-
-    if (typeof this.keyboard === 'undefined') {
-      this.keyboard = this.config.keyboard;
-    }
-  }
-
-  show() {
-    if (this._bsModal) {
-      return true;
-    }
-
-    if (this.shouldChange()) {
-      this._bsModal = true;
-      this.bsModalChange.emit(true);
-      this.doShow();
-      return true;
-    }
-
-    return false;
-  }
-
-  hide() {
-    if (!this._bsModal) {
-      return true;
-    }
-
-    if (this.shouldChange()) {
-      this._bsModal = false;
-      this.bsModalChange.emit(false);
-      this.doHide();
-      return true;
-    }
-
-    return false;
-  }
-
-  shouldChange() {
-    let ret = typeof this.onBeforeChange !== 'undefined' ? this.onBeforeChange(this) : true;
-
-    if (ret) {
-      ret = this.config.onBeforeChange(this);
-    }
-
-    return ret;
-  }
-
-  doShow() {
-    if (!this.elementRef.nativeElement.classList.contains('show')) {
-      this.elementRef.nativeElement.style.display = 'block';
-      this.elementRef.nativeElement.offsetWidth; // force reflow
-
-      this.backdropService.show(!!this.backdrop, this.elementRef.nativeElement.classList.contains('fade')).then(() => {
-        this.elementRef.nativeElement.classList.add('show');
-      });
-    }
-  }
-
-  doHide() {
-    if (this.elementRef.nativeElement.classList.contains('show')) {
-      this.elementRef.nativeElement.classList.remove('show');
-      let transitionEnded = false;
-
-      const callback = () => {
-        this.backdropService.hide();
-        this.elementRef.nativeElement.style.display = '';
-      },
-            transition = () => {
-        if (!transitionEnded) {
-          this.elementRef.nativeElement.removeEventListener('transitionend', transition);
-          callback();
-          transitionEnded = true;
+    set bsModal(bsModal) {
+        if (bsModal === this._bsModal) {
+            return;
         }
-      };
-
-      if (this.elementRef.nativeElement.classList.contains('fade')) {
-        this.elementRef.nativeElement.addEventListener('transitionend', transition);
-        setTimeout(transition, 300);
-      } else {
-        callback();
-      }
+        const result = bsModal ? this.show() : this.hide();
+        if (!result) { // not shown, prevented by shouldChange
+            setTimeout(() => {
+                this.bsModalChange.emit(!bsModal);
+            });
+            this._bsModal = !bsModal;
+        }
     }
-  }
-
+    click(target) {
+        var _a;
+        if (((_a = window.getSelection()) === null || _a === void 0 ? void 0 : _a.type) === 'Range') {
+            return;
+        }
+        if (this.backdrop === true && target === this.elementRef.nativeElement) { // .modal covers whole page
+            this.hide();
+        }
+    }
+    keydown() {
+        if (this.keyboard) {
+            this.hide();
+        }
+    }
+    ngOnInit() {
+        if (typeof this.backdrop === 'undefined') {
+            this.backdrop = this.config.backdrop;
+        }
+        if (typeof this.keyboard === 'undefined') {
+            this.keyboard = this.config.keyboard;
+        }
+    }
+    show() {
+        if (this._bsModal) {
+            return true;
+        }
+        if (this.shouldChange()) {
+            this._bsModal = true;
+            this.bsModalChange.emit(true);
+            this.doShow();
+            return true;
+        }
+        return false;
+    }
+    hide() {
+        if (!this._bsModal) {
+            return true;
+        }
+        if (this.shouldChange()) {
+            this._bsModal = false;
+            this.bsModalChange.emit(false);
+            this.doHide();
+            return true;
+        }
+        return false;
+    }
+    shouldChange() {
+        let ret = typeof this.onBeforeChange !== 'undefined' ? this.onBeforeChange(this) : true;
+        if (ret) {
+            ret = this.config.onBeforeChange(this);
+        }
+        return ret;
+    }
+    doShow() {
+        if (!this.elementRef.nativeElement.classList.contains('show')) {
+            this.elementRef.nativeElement.style.display = 'block';
+            this.elementRef.nativeElement.offsetWidth; // force reflow
+            this.backdropService
+                .show(!!this.backdrop, this.elementRef.nativeElement.classList.contains('fade'))
+                .then(() => {
+                this.elementRef.nativeElement.classList.add('show');
+            });
+        }
+    }
+    doHide() {
+        if (this.elementRef.nativeElement.classList.contains('show')) {
+            this.elementRef.nativeElement.classList.remove('show');
+            let transitionEnded = false;
+            const callback = () => {
+                this.backdropService.hide();
+                this.elementRef.nativeElement.style.display = '';
+            }, transition = () => {
+                if (!transitionEnded) {
+                    this.elementRef.nativeElement.removeEventListener('transitionend', transition);
+                    callback();
+                    transitionEnded = true;
+                }
+            };
+            if (this.elementRef.nativeElement.classList.contains('fade')) {
+                this.elementRef.nativeElement.addEventListener('transitionend', transition);
+                setTimeout(transition, 300);
+            }
+            else {
+                callback();
+            }
+        }
+    }
 }
-
-BsModalDirective.ɵfac = function BsModalDirective_Factory(t) {
-  return new (t || BsModalDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalConfigService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalBackdropService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef));
-};
-
-BsModalDirective.ɵdir = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({
-  type: BsModalDirective,
-  selectors: [["", "bsModal", ""]],
-  hostBindings: function BsModalDirective_HostBindings(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function BsModalDirective_click_HostBindingHandler($event) {
-        return ctx.click($event.target);
-      })("keydown.escape", function BsModalDirective_keydown_escape_HostBindingHandler() {
-        return ctx.keydown();
-      }, false, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresolveDocument"]);
-    }
-  },
-  inputs: {
-    bsModal: "bsModal",
-    backdrop: "backdrop",
-    keyboard: "keyboard",
-    onBeforeChange: "onBeforeChange"
-  },
-  outputs: {
-    bsModalChange: "bsModalChange"
-  },
-  exportAs: ["bsModal"]
-});
-
-(function () {
-  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalDirective, [{
-    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
-    args: [{
-      selector: '[bsModal]',
-      exportAs: 'bsModal'
-    }]
-  }], function () {
-    return [{
-      type: BsModalConfigService
-    }, {
-      type: BsModalBackdropService
-    }, {
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef
-    }];
-  }, {
-    bsModal: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
-    }],
-    bsModalChange: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
-    }],
-    backdrop: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
-    }],
-    keyboard: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
-    }],
-    onBeforeChange: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
-    }],
-    click: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
-      args: ['click', ['$event.target']]
-    }],
-    keydown: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
-      args: ['document:keydown.escape']
-    }]
-  });
-})();
+BsModalDirective.ɵfac = function BsModalDirective_Factory(t) { return new (t || BsModalDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalConfigService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalBackdropService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef)); };
+BsModalDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({ type: BsModalDirective, selectors: [["", "bsModal", ""]], hostBindings: function BsModalDirective_HostBindings(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function BsModalDirective_click_HostBindingHandler($event) { return ctx.click($event.target); })("keydown.escape", function BsModalDirective_keydown_escape_HostBindingHandler() { return ctx.keydown(); }, false, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresolveDocument"]);
+    } }, inputs: { bsModal: "bsModal", backdrop: "backdrop", keyboard: "keyboard", onBeforeChange: "onBeforeChange" }, outputs: { bsModalChange: "bsModalChange" }, exportAs: ["bsModal"] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalDirective, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+        args: [{
+                selector: '[bsModal]',
+                exportAs: 'bsModal'
+            }]
+    }], function () { return [{ type: BsModalConfigService }, { type: BsModalBackdropService }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, { bsModal: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], bsModalChange: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+        }], backdrop: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], keyboard: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], onBeforeChange: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], click: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['click', ['$event.target']]
+        }], keydown: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['document:keydown.escape']
+        }] }); })();
 
 class DismissDirective {
-  constructor(bsModal) {
-    this.bsModal = bsModal;
-  }
-
-  click() {
-    this.bsModal.hide();
-  }
-
-}
-
-DismissDirective.ɵfac = function DismissDirective_Factory(t) {
-  return new (t || DismissDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalDirective, 1));
-};
-
-DismissDirective.ɵdir = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({
-  type: DismissDirective,
-  selectors: [["", "dismiss", ""]],
-  hostBindings: function DismissDirective_HostBindings(rf, ctx) {
-    if (rf & 1) {
-      _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function DismissDirective_click_HostBindingHandler() {
-        return ctx.click();
-      });
+    constructor(bsModal) {
+        this.bsModal = bsModal;
     }
-  }
-});
+    click() {
+        this.bsModal.hide();
+    }
+}
+DismissDirective.ɵfac = function DismissDirective_Factory(t) { return new (t || DismissDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsModalDirective, 1)); };
+DismissDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({ type: DismissDirective, selectors: [["", "dismiss", ""]], hostBindings: function DismissDirective_HostBindings(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function DismissDirective_click_HostBindingHandler() { return ctx.click(); });
+    } } });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](DismissDirective, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+        args: [{
+                selector: '[dismiss]'
+            }]
+    }], function () { return [{ type: BsModalDirective, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Host
+            }] }]; }, { click: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['click']
+        }] }); })();
 
-(function () {
-  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](DismissDirective, [{
-    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
-    args: [{
-      selector: '[dismiss]'
-    }]
-  }], function () {
-    return [{
-      type: BsModalDirective,
-      decorators: [{
-        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Host
-      }]
-    }];
-  }, {
-    click: [{
-      type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
-      args: ['click']
-    }]
-  });
-})();
+class BsModalModule {
+}
+BsModalModule.ɵfac = function BsModalModule_Factory(t) { return new (t || BsModalModule)(); };
+BsModalModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsModalModule });
+BsModalModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ imports: [[
+            _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
+        ]] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+        args: [{
+                declarations: [
+                    BsModalBackdropComponent,
+                    BsModalDirective,
+                    DismissDirective
+                ],
+                imports: [
+                    _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
+                ],
+                exports: [
+                    BsModalDirective,
+                    DismissDirective
+                ]
+            }]
+    }], null, null); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](BsModalModule, { declarations: [BsModalBackdropComponent,
+        BsModalDirective,
+        DismissDirective], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule], exports: [BsModalDirective,
+        DismissDirective] }); })();
 
-class BsModalModule {}
+class BsHelpers {
+    /**
+     * Get element width, height, position from top and left of document/window,
+     */
+    offset(element) {
+        const elemBCR = element.getBoundingClientRect(), elemStyle = window.getComputedStyle(element);
+        return {
+            width: Math.ceil(elemBCR.width || element.offsetWidth)
+                + parseInt(elemStyle.getPropertyValue('margin-left'))
+                + parseInt(elemStyle.getPropertyValue('margin-right')),
+            height: Math.ceil(elemBCR.height || element.offsetHeight)
+                + parseInt(elemStyle.getPropertyValue('margin-top'))
+                + parseInt(elemStyle.getPropertyValue('margin-bottom')),
+            top: Math.ceil(elemBCR.top + (window.pageYOffset || document.documentElement.scrollTop)),
+            left: Math.ceil(elemBCR.left + (window.pageXOffset || document.documentElement.scrollLeft)),
+        };
+    }
+    /**
+     * Removes all placement classes on given element
+     */
+    setPlacementCSS(element, prefix, placement) {
+        ['top', 'left', 'right', 'bottom'].forEach((placement) => {
+            element.nativeElement.classList.remove(prefix + placement);
+        });
+        element.nativeElement.classList.add(prefix + placement);
+    }
+}
+BsHelpers.ɵfac = function BsHelpers_Factory(t) { return new (t || BsHelpers)(); };
+BsHelpers.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsHelpers, factory: BsHelpers.ɵfac, providedIn: 'root' });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsHelpers, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], null, null); })();
 
-BsModalModule.ɵfac = function BsModalModule_Factory(t) {
-  return new (t || BsModalModule)();
-};
+class BsDropdownBoundaryDirective {
+    constructor(elementRef) {
+        this.elementRef = elementRef;
+    }
+}
+BsDropdownBoundaryDirective.ɵfac = function BsDropdownBoundaryDirective_Factory(t) { return new (t || BsDropdownBoundaryDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef)); };
+BsDropdownBoundaryDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({ type: BsDropdownBoundaryDirective, selectors: [["", "bsDropdownBoundary", ""]] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsDropdownBoundaryDirective, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+        args: [{
+                selector: '[bsDropdownBoundary]'
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
 
-BsModalModule.ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
-  type: BsModalModule
-});
-BsModalModule.ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
-  imports: [[_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule]]
-});
+class BsDropdownDirective {
+    constructor(elementRef, helpers, boundary) {
+        this.elementRef = elementRef;
+        this.helpers = helpers;
+        this.boundary = boundary;
+        this._bsDropdown = false;
+        this.bsDropdownChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+    }
+    get bsDropdown() {
+        return this._bsDropdown;
+    }
+    set bsDropdown(bsDropdown) {
+        this._bsDropdown = bsDropdown;
+        if (bsDropdown) {
+            this.show();
+        }
+        else {
+            this.hide();
+        }
+    }
+    ngOnInit() {
+        this.elementRef.nativeElement.classList.add('dropdown');
+    }
+    click(target) {
+        if (this._bsDropdown && !this.elementRef.nativeElement.contains(target)) {
+            this._bsDropdown = false;
+            this.bsDropdownChange.emit(false);
+        }
+    }
+    keydown(event) {
+        if (!this._bsDropdown) {
+            return;
+        }
+        if (event.key === 'Escape') {
+            this._bsDropdown = false;
+            this.bsDropdownChange.emit(false);
+        }
+        if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+            const items = this.elementRef.nativeElement.querySelectorAll('.dropdown-menu a:not(.disabled)');
+            let idx = -1;
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].contains(event.target)) {
+                    idx = i;
+                    break;
+                }
+            }
+            if (event.key === 'ArrowUp' && idx > 0) {
+                idx--;
+            }
+            else if (event.key === 'ArrowDown' && idx < items.length - 1) {
+                idx++;
+            }
+            if (!~idx) {
+                idx = 0;
+            }
+            items[idx].focus();
+        }
+    }
+    show() {
+        this.elementRef.nativeElement.classList.add('show');
+        this.elementRef.nativeElement.querySelectorAll('.dropdown-menu')
+            .forEach((element) => {
+            element.classList.add('show');
+        });
+        this.reposition();
+    }
+    hide() {
+        if (this.boundary || this.boundaryElement) {
+            this.elementRef.nativeElement.classList.remove('dropup');
+        }
+        this.elementRef.nativeElement.classList.remove('show');
+        this.elementRef.nativeElement.querySelectorAll('.dropdown-menu')
+            .forEach((element) => {
+            element.classList.remove('show');
+        });
+    }
+    reposition() {
+        let boundaryElement;
+        if (this.boundary) {
+            boundaryElement = this.boundary.elementRef.nativeElement;
+        }
+        else if (this.boundaryElement) {
+            boundaryElement = this.boundaryElement.nativeElement;
+        }
+        else {
+            return;
+        }
+        const dropdownMenu = this.elementRef.nativeElement.querySelector('.dropdown-menu');
+        if (!dropdownMenu) {
+            return;
+        }
+        const boundaryOffset = this.helpers.offset(boundaryElement), menuOffset = this.helpers.offset(dropdownMenu);
+        if (menuOffset.height + menuOffset.top > boundaryOffset.height + boundaryOffset.top) {
+            this.elementRef.nativeElement.classList.add('dropup');
+        }
+        else {
+            this.elementRef.nativeElement.classList.remove('dropup');
+        }
+    }
+}
+BsDropdownDirective.ɵfac = function BsDropdownDirective_Factory(t) { return new (t || BsDropdownDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsHelpers), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsDropdownBoundaryDirective, 9)); };
+BsDropdownDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({ type: BsDropdownDirective, selectors: [["", "bsDropdown", ""]], hostBindings: function BsDropdownDirective_HostBindings(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function BsDropdownDirective_click_HostBindingHandler($event) { return ctx.click($event.target); }, false, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresolveDocument"])("keydown", function BsDropdownDirective_keydown_HostBindingHandler($event) { return ctx.keydown($event); }, false, _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵresolveDocument"]);
+    } }, inputs: { bsDropdown: "bsDropdown", boundaryElement: "boundaryElement" }, outputs: { bsDropdownChange: "bsDropdownChange" } });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsDropdownDirective, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+        args: [{
+                selector: '[bsDropdown]'
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }, { type: BsHelpers }, { type: BsDropdownBoundaryDirective, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Optional
+            }, {
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Host
+            }] }]; }, { bsDropdown: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], boundaryElement: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], bsDropdownChange: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+        }], click: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['document:click', ['$event.target']]
+        }], keydown: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['document:keydown', ['$event']]
+        }] }); })();
 
-(function () {
-  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalModule, [{
-    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
-    args: [{
-      declarations: [BsModalBackdropComponent, BsModalDirective, DismissDirective],
-      imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule],
-      exports: [BsModalDirective, DismissDirective]
-    }]
-  }], null, null);
-})();
+class BsDropdownToggleDirective {
+    constructor(bsDropdown) {
+        this.bsDropdown = bsDropdown;
+    }
+    click() {
+        this.bsDropdown.bsDropdownChange.emit(!this.bsDropdown.bsDropdown);
+    }
+}
+BsDropdownToggleDirective.ɵfac = function BsDropdownToggleDirective_Factory(t) { return new (t || BsDropdownToggleDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsDropdownDirective, 1)); };
+BsDropdownToggleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({ type: BsDropdownToggleDirective, selectors: [["", "bsDropdownToggle", ""]], hostBindings: function BsDropdownToggleDirective_HostBindings(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function BsDropdownToggleDirective_click_HostBindingHandler() { return ctx.click(); });
+    } } });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsDropdownToggleDirective, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+        args: [{
+                selector: '[bsDropdownToggle]'
+            }]
+    }], function () { return [{ type: BsDropdownDirective, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Host
+            }] }]; }, { click: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['click']
+        }] }); })();
 
-class AngularBootstrap4Module {}
+class BsHelpersModule {
+}
+BsHelpersModule.ɵfac = function BsHelpersModule_Factory(t) { return new (t || BsHelpersModule)(); };
+BsHelpersModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsHelpersModule });
+BsHelpersModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({});
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsHelpersModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+        args: [{
+                declarations: [],
+                exports: []
+            }]
+    }], null, null); })();
 
-AngularBootstrap4Module.ɵfac = function AngularBootstrap4Module_Factory(t) {
-  return new (t || AngularBootstrap4Module)();
-};
+class BsDropdownModule {
+}
+BsDropdownModule.ɵfac = function BsDropdownModule_Factory(t) { return new (t || BsDropdownModule)(); };
+BsDropdownModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsDropdownModule });
+BsDropdownModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ imports: [[
+            BsHelpersModule
+        ]] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsDropdownModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+        args: [{
+                declarations: [
+                    BsDropdownBoundaryDirective,
+                    BsDropdownDirective,
+                    BsDropdownToggleDirective
+                ],
+                imports: [
+                    BsHelpersModule
+                ],
+                exports: [
+                    BsDropdownBoundaryDirective,
+                    BsDropdownDirective,
+                    BsDropdownToggleDirective
+                ]
+            }]
+    }], null, null); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](BsDropdownModule, { declarations: [BsDropdownBoundaryDirective,
+        BsDropdownDirective,
+        BsDropdownToggleDirective], imports: [BsHelpersModule], exports: [BsDropdownBoundaryDirective,
+        BsDropdownDirective,
+        BsDropdownToggleDirective] }); })();
 
-AngularBootstrap4Module.ɵmod = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({
-  type: AngularBootstrap4Module
-});
-AngularBootstrap4Module.ɵinj = /* @__PURE__ */_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({
-  imports: [[BsModalModule], BsModalModule]
-});
+class AngularBootstrap4Module {
+}
+AngularBootstrap4Module.ɵfac = function AngularBootstrap4Module_Factory(t) { return new (t || AngularBootstrap4Module)(); };
+AngularBootstrap4Module.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: AngularBootstrap4Module });
+AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ imports: [[
+            BsDropdownModule,
+            BsHelpersModule,
+            BsModalModule
+        ], BsDropdownModule,
+        BsHelpersModule,
+        BsModalModule] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AngularBootstrap4Module, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+        args: [{
+                declarations: [],
+                imports: [
+                    BsDropdownModule,
+                    BsHelpersModule,
+                    BsModalModule
+                ],
+                exports: [
+                    BsDropdownModule,
+                    BsHelpersModule,
+                    BsModalModule
+                ]
+            }]
+    }], null, null); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](AngularBootstrap4Module, { imports: [BsDropdownModule,
+        BsHelpersModule,
+        BsModalModule], exports: [BsDropdownModule,
+        BsHelpersModule,
+        BsModalModule] }); })();
 
-(function () {
-  (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AngularBootstrap4Module, [{
-    type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
-    args: [{
-      declarations: [],
-      imports: [BsModalModule],
-      exports: [BsModalModule]
-    }]
-  }], null, null);
-})();
 /*
  * Public API Surface of angular-bootstrap4
  */
@@ -566,8 +663,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const _c0 = ["bsModalApi"];
 function AppComponent_li_8_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 35);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "a", 36);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 46);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "a", 47);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -592,6 +689,9 @@ class AppComponent {
                 return !this.modal.preventModalOpen;
             }
         };
+        this.dropdown = false;
+        this.dropdown2 = false;
+        this.dropdown3 = false;
     }
 }
 AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(); };
@@ -600,7 +700,7 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
     } if (rf & 2) {
         let _t;
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.bsModalApi = _t.first);
-    } }, decls: 123, vars: 13, consts: [[1, "navbar", "fixed-top", "navbar-expand-lg", "navbar-light", "bg-light"], [1, "container"], ["href", "#", 1, "navbar-brand"], ["type", "button", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["bs-collapse", "navbar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], ["class", "nav-item", 4, "ngFor", "ngForOf"], ["id", "Modal"], [1, "page-header", "border-bottom"], [1, "row"], [1, "col-md-4"], [1, "btn", "btn-outline-primary", "btn-lg", 3, "click"], [1, "radio"], ["type", "radio", "value", "static", 3, "ngModel", "ngModelChange"], ["type", "radio", 3, "ngModel", "value", "ngModelChange"], [1, "checkbox"], ["type", "checkbox", 3, "ngModel", "ngModelChange"], [1, "modal", "fade", 3, "bsModal", "backdrop", "keyboard", "onBeforeChange", "bsModalChange"], ["bsModalApi", "bsModal"], [1, "modal-dialog"], [1, "modal-content"], [1, "modal-header"], [1, "modal-title"], ["type", "button", "dismiss", "modal", "aria-label", "Close", 1, "close"], ["aria-hidden", "true"], [1, "modal-body"], ["type", "button", 1, "btn", "btn-primary", "btn-large", 3, "click"], [1, "modal-footer"], ["type", "button", 1, "btn", "btn-danger", 3, "click"], [1, "modal", "fade", 3, "bsModal", "bsModalChange"], ["type", "button", "dismiss", "modal", 1, "btn", "btn-danger"], [1, "col-md-8"], [1, "table", "table-bordered", "table-striped", "js-options-table"], ["colspan", "4"], [1, "nav-item"], [1, "nav-link", 3, "href"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
+    } }, decls: 201, vars: 16, consts: [[1, "navbar", "fixed-top", "navbar-expand-lg", "navbar-light", "bg-light"], [1, "container"], ["href", "#", 1, "navbar-brand"], ["type", "button", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["bs-collapse", "navbar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], ["class", "nav-item", 4, "ngFor", "ngForOf"], ["id", "Modal"], [1, "page-header", "border-bottom"], [1, "row"], [1, "col-md-4"], [1, "btn", "btn-outline-primary", "btn-lg", 3, "click"], [1, "radio"], ["type", "radio", "value", "static", 3, "ngModel", "ngModelChange"], ["type", "radio", 3, "ngModel", "value", "ngModelChange"], [1, "checkbox"], ["type", "checkbox", 3, "ngModel", "ngModelChange"], [1, "modal", "fade", 3, "bsModal", "backdrop", "keyboard", "onBeforeChange", "bsModalChange"], ["bsModalApi", "bsModal"], [1, "modal-dialog"], [1, "modal-content"], [1, "modal-header"], [1, "modal-title"], ["type", "button", "dismiss", "modal", "aria-label", "Close", 1, "close"], ["aria-hidden", "true"], [1, "modal-body"], ["type", "button", 1, "btn", "btn-primary", "btn-large", 3, "click"], [1, "modal-footer"], ["type", "button", 1, "btn", "btn-danger", 3, "click"], [1, "modal", "fade", 3, "bsModal", "bsModalChange"], ["type", "button", "dismiss", "modal", 1, "btn", "btn-danger"], [1, "col-md-8"], [1, "table", "table-bordered", "table-striped", "js-options-table"], ["colspan", "4"], ["id", "Dropdown"], [1, "page-header"], [3, "bsDropdown", "bsDropdownChange"], ["bsDropdownToggle", "", 1, "btn", "btn-outline-primary", "dropdown-toggle"], [1, "dropdown-menu"], ["href", "#", 1, "dropdown-item"], ["href", "javascript:", 3, "click"], [1, "help-block"], ["bsDropdownBoundary", "", 1, "d-flex", "flex-column", 2, "height", "200px"], [1, "mt-auto", 3, "bsDropdown", "bsDropdownChange"], [1, "help-block", "mt-3"], [1, "nav-item"], [1, "nav-link", 3, "href"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
         const _r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "nav", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
@@ -813,6 +913,138 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](123, "section", 35);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](124, "h3", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](125, "Dropdown");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](126, "div", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](127, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](128, "div", 37);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("bsDropdownChange", function AppComponent_Template_div_bsDropdownChange_128_listener($event) { return ctx.dropdown = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](129, "button", 38);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](130, " Toggle dropdown ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](131, "ul", 39);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](132, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](133, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](134, "Action");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](135, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](136, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](137, "Another action");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](138, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](139, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](140, "Something else here");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](141, "div", 32);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](142, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](143, "<div ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](144, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](145, "[(bsDropdown)]=\"dropdown\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](146, ">\n\t<button ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](147, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](148, "bsDropdownToggle");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](149, " class=\"btn btn-primary dropdown-toggle\">Toggle dropdown</button>\n\t<ul class=\"dropdown-menu\">\n\t\t<li><a class=\"dropdown-item\" href=\"#\">Action</a></li>\n\t\t<li><a class=\"dropdown-item\" href=\"#\">Another action</a></li>\n\t\t<li><a class=\"dropdown-item\" href=\"#\">Something else here</a></li>\n\t</ul>\n</div>");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](150, "div", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](151, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](152, "a", 41);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function AppComponent_Template_a_click_152_listener($event) { ctx.dropdown = true; return $event.stopPropagation(); });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](153, " Show dropdown by binding ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](154, "div", 32);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](155, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](156, "<a ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](157, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](158, "(click)=\"dropdown=true;$event.stopPropagation()\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](159, ">Show dropdown by binding</a>");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](160, "h4", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](161, "Auto placement & boundary element");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](162, "p", 42);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](163, " Dropdown will be converted to 'dropup' if it would overflow given boundary element (red border). ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](164, "div", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](165, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](166, "div", 43);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](167, "div", 37);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("bsDropdownChange", function AppComponent_Template_div_bsDropdownChange_167_listener($event) { return ctx.dropdown2 = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](168, "button", 38);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](169, " Toggle dropdown ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](170, "ul", 39);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](171, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](172, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](173, "Action");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](174, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](175, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](176, "Another action");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](177, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](178, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](179, "Something else here");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](180, "div", 44);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("bsDropdownChange", function AppComponent_Template_div_bsDropdownChange_180_listener($event) { return ctx.dropdown3 = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](181, "button", 38);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](182, " Toggle dropdown ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](183, "ul", 39);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](184, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](185, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](186, "Action");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](187, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](188, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](189, "Another action");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](190, "li");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](191, "a", 40);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](192, "Something else here");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](193, "div", 32);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](194, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](195, "<div ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](196, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](197, "bsDropdownBoundary");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](198, ">\n\t<div [(bsDropdown)]...>\n\t\t...\n\t</div>\n</div>");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](199, "p", 45);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](200, " Optionally, you can pass boundary element (elementRef) via 'boundaryElement' binding. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
@@ -831,6 +1063,12 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsModal", ctx.modal.exampleModal)("backdrop", ctx.modal.backdrop)("keyboard", ctx.modal.keyboard)("onBeforeChange", ctx.modal.beforeChange);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](16);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsModal", ctx.modal.nestedModal);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](73);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsDropdown", ctx.dropdown);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](39);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsDropdown", ctx.dropdown2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](13);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsDropdown", ctx.dropdown3);
     } }, styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJhcHAuY29tcG9uZW50LmNzcyJ9 */"] });
 
 
@@ -876,7 +1114,7 @@ AppModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵ
         _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective], imports: [angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.AngularBootstrap4Module,
         _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__.BrowserModule,
         _angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormsModule] }); })();
-_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵsetComponentScope"](_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent, [_angular_common__WEBPACK_IMPORTED_MODULE_6__.NgForOf, _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.RadioControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.CheckboxControlValueAccessor, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsModalDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.DismissDirective], []);
+_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵsetComponentScope"](_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent, [_angular_common__WEBPACK_IMPORTED_MODULE_6__.NgForOf, _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.RadioControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.CheckboxControlValueAccessor, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsModalDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.DismissDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsDropdownDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsDropdownToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsDropdownBoundaryDirective], []);
 
 
 /***/ }),
