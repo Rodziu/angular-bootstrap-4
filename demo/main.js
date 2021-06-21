@@ -18,6 +18,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "BsModalConfigService": () => (/* binding */ BsModalConfigService),
 /* harmony export */   "BsModalDirective": () => (/* binding */ BsModalDirective),
 /* harmony export */   "BsModalModule": () => (/* binding */ BsModalModule),
+/* harmony export */   "BsTooltipBoundaryDirective": () => (/* binding */ BsTooltipBoundaryDirective),
+/* harmony export */   "BsTooltipComponent": () => (/* binding */ BsTooltipComponent),
+/* harmony export */   "BsTooltipConfigService": () => (/* binding */ BsTooltipConfigService),
+/* harmony export */   "BsTooltipModule": () => (/* binding */ BsTooltipModule),
+/* harmony export */   "BsTooltipToggleDirective": () => (/* binding */ BsTooltipToggleDirective),
 /* harmony export */   "DismissDirective": () => (/* binding */ DismissDirective)
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 7716);
@@ -45,7 +50,7 @@ BsModalConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODU
             }]
     }], null, null); })();
 
-const _c0 = function (a0) { return { "fade": a0 }; };
+const _c0$1 = function (a0) { return { "fade": a0 }; };
 class BsModalBackdropComponent {
     constructor(service, elementRef) {
         this.service = service;
@@ -87,7 +92,7 @@ BsModalBackdropComponent.ɵfac = function BsModalBackdropComponent_Factory(t) { 
 BsModalBackdropComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: BsModalBackdropComponent, selectors: [["bs-modal-backdrop"]], decls: 1, vars: 3, consts: [[1, "modal-backdrop", 3, "ngClass"]], template: function BsModalBackdropComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "div", 0);
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0, ctx.service.isAnimated));
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0$1, ctx.service.isAnimated));
     } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass], encapsulation: 2 });
 (function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalBackdropComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
@@ -97,11 +102,193 @@ BsModalBackdropComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_M
             }]
     }], function () { return [{ type: BsModalBackdropService }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
 
-class BsModalBackdropService {
-    constructor(componentFactoryResolver, appRef, injector) {
+class BsHelpers {
+    constructor(componentFactoryResolver, appRef, injector, document) {
         this.componentFactoryResolver = componentFactoryResolver;
         this.appRef = appRef;
         this.injector = injector;
+        this.document = document;
+    }
+    /**
+     * Get element width, height, position from top and left of document/window,
+     */
+    offset(element) {
+        const elemBCR = element.getBoundingClientRect(), elemStyle = window.getComputedStyle(element);
+        return {
+            width: Math.ceil(elemBCR.width || element.offsetWidth)
+                + parseInt(elemStyle.getPropertyValue('margin-left'))
+                + parseInt(elemStyle.getPropertyValue('margin-right')),
+            height: Math.ceil(elemBCR.height || element.offsetHeight)
+                + parseInt(elemStyle.getPropertyValue('margin-top'))
+                + parseInt(elemStyle.getPropertyValue('margin-bottom')),
+            top: Math.ceil(elemBCR.top + (window.pageYOffset || this.document.documentElement.scrollTop)),
+            left: Math.ceil(elemBCR.left + (window.pageXOffset || this.document.documentElement.scrollLeft)),
+        };
+    }
+    /**
+     * Removes all placement classes on given element
+     */
+    setPlacementCSS(element, prefix, placement) {
+        ['top', 'left', 'right', 'bottom'].forEach((placement) => {
+            element.classList.remove(prefix + placement);
+        });
+        element.classList.add(prefix + placement);
+    }
+    /**
+     * Position element aside of positionTo on given side (placement)
+     */
+    positionElement(element, positionTo, placement, boundaryElement, cssPrefix) {
+        const splitPlacement = placement.split(' ');
+        let top = 0, left = 0, arrowTop = '50%', realPlacement = 'left', offset = this.offset(element);
+        const offsetTo = this.offset(positionTo), placements = ['right', 'top', 'bottom'], auto = !!~splitPlacement.indexOf('auto'), calcPosition = () => {
+            switch (realPlacement) {
+                case 'bottom':
+                    top = (offsetTo.top + offsetTo.height);
+                    left = ((offsetTo.left + (offsetTo.width / 2)) - (offset.width / 2));
+                    break;
+                case 'top':
+                    top = (offsetTo.top - offset.height);
+                    left = ((offsetTo.left + (offsetTo.width / 2)) - (offset.width / 2));
+                    break;
+                case 'left':
+                    top = (offsetTo.top + ((offsetTo.height - offset.height) / 2));
+                    left = (offsetTo.left - offset.width);
+                    break;
+                case 'right':
+                    top = (offsetTo.top + ((offsetTo.height - offset.height) / 2));
+                    left = (offsetTo.left + offsetTo.width);
+                    break;
+            }
+            this.setPlacementCSS(element, cssPrefix, realPlacement);
+            // check to see if element has been resized after adding the placement
+            const newOffset = this.offset(element);
+            if (newOffset.height !== offset.height || newOffset.width !== offset.width) {
+                offset = newOffset;
+                calcPosition();
+            }
+        };
+        for (let p = 0; p < placements.length; p++) {
+            if (~splitPlacement.indexOf(placements[p])) {
+                realPlacement = placements[p];
+                break;
+            }
+        }
+        calcPosition();
+        // get boundary offset
+        const bo = typeof boundaryElement !== 'undefined' ? this.offset(boundaryElement) : {
+            top: window.pageYOffset || this.document.documentElement.scrollTop,
+            left: 0,
+            width: Math.max(window.innerWidth, this.document.body.clientWidth),
+            height: Math.max(window.innerHeight, this.document.body.clientHeight)
+        };
+        // change side if element would be outside of given viewport
+        if (auto) {
+            let newPlacement = realPlacement;
+            switch (realPlacement) {
+                case 'left':
+                    if (left < bo.left) {
+                        newPlacement = 'right';
+                    }
+                    break;
+                case 'right':
+                    if (left + offset.width + 10 > bo.left + bo.width) {
+                        newPlacement = 'left';
+                    }
+                    break;
+                case 'bottom':
+                    if (top + offset.height + 10 > bo.top + bo.height) {
+                        newPlacement = 'top';
+                    }
+                    break;
+                case 'top':
+                    if (top < bo.top) {
+                        newPlacement = 'bottom';
+                    }
+                    break;
+            }
+            if (newPlacement !== realPlacement) {
+                realPlacement = newPlacement;
+                calcPosition();
+            }
+        }
+        // adjust arrow position
+        const arrow = element.querySelector('.arrow');
+        if (arrow) {
+            switch (realPlacement) {
+                case 'left':
+                case 'right':
+                    if (top < bo.top) {
+                        top = bo.top;
+                        arrowTop = (offsetTo.top + offsetTo.height / 2) + 'px';
+                    }
+                    else if (top + offset.height > bo.top + bo.height) {
+                        top = bo.top + bo.height - offset.height;
+                        let arrowTopN = offsetTo.top + offsetTo.height / 2 - top;
+                        if (arrowTopN > offset.height - 15) {
+                            arrowTopN = offset.height - 15;
+                        }
+                        arrowTop = arrowTopN + 'px';
+                    }
+                    arrow.style.top = arrowTop;
+                    break;
+                case 'bottom':
+                    arrow.style.top = '';
+                    break;
+                case 'top':
+                    arrow.style.top = 'auto';
+                    break;
+            }
+        }
+        this.adjustArrow(element, realPlacement);
+        // apply element position
+        element.style.top = '0px';
+        element.style.left = '0px';
+        element.style.transform = 'translate3d(' + left + 'px, ' + top + 'px, 0px)';
+    }
+    /**
+     * Properly set arrow position of tooltip/popover element
+     */
+    adjustArrow(element, placement) {
+        const arrow = element.querySelector('.arrow');
+        if (arrow) {
+            switch (placement) {
+                case 'top':
+                case 'bottom':
+                    arrow.style.left = 'calc(50% - ' + (this.offset(arrow).width / 2 + 'px)');
+                    break;
+                case 'left':
+                case 'right':
+                    arrow.style.top = 'calc(50% - ' + (this.offset(arrow).height / 2 + 'px)');
+                    break;
+            }
+        }
+    }
+    createComponent(component, appendTo, projectableNodes) {
+        const componentRef = this.componentFactoryResolver
+            .resolveComponentFactory(component)
+            .create(this.injector, projectableNodes);
+        this.appRef.attachView(componentRef.hostView);
+        appendTo.appendChild(componentRef.hostView
+            .rootNodes[0]);
+        return componentRef;
+    }
+}
+BsHelpers.ɵfac = function BsHelpers_Factory(t) { return new (t || BsHelpers)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT)); };
+BsHelpers.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsHelpers, factory: BsHelpers.ɵfac, providedIn: 'root' });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsHelpers, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector }, { type: Document, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+                args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT]
+            }] }]; }, null); })();
+
+class BsModalBackdropService {
+    constructor(helpers, document) {
+        this.helpers = helpers;
+        this.document = document;
         this.openModals = 0;
         this._isAnimated = false;
     }
@@ -113,7 +300,7 @@ class BsModalBackdropService {
             this.createBackdropComponent();
             this.openModals++;
             this._isAnimated = animate;
-            document.body.classList.add('modal-open');
+            this.document.body.classList.add('modal-open');
             if (backdrop) {
                 setTimeout(() => {
                     var _a;
@@ -130,13 +317,7 @@ class BsModalBackdropService {
         if (typeof this.backdropRef !== 'undefined') {
             return;
         }
-        const componentRef = this.componentFactoryResolver
-            .resolveComponentFactory(BsModalBackdropComponent)
-            .create(this.injector);
-        this.appRef.attachView(componentRef.hostView);
-        document.body.appendChild(componentRef.hostView
-            .rootNodes[0]);
-        this.backdropRef = componentRef;
+        this.backdropRef = this.helpers.createComponent(BsModalBackdropComponent, this.document.body);
     }
     hide() {
         this.openModals--;
@@ -145,7 +326,7 @@ class BsModalBackdropService {
         }
         if (this.openModals === 0) {
             const callback = () => {
-                document.body.classList.remove('modal-open');
+                this.document.body.classList.remove('modal-open');
             };
             if (this.backdropRef) {
                 this.backdropRef.instance.hide().then(callback);
@@ -156,14 +337,17 @@ class BsModalBackdropService {
         }
     }
 }
-BsModalBackdropService.ɵfac = function BsModalBackdropService_Factory(t) { return new (t || BsModalBackdropService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector)); };
+BsModalBackdropService.ɵfac = function BsModalBackdropService_Factory(t) { return new (t || BsModalBackdropService)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](BsHelpers), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵinject"](_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT)); };
 BsModalBackdropService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsModalBackdropService, factory: BsModalBackdropService.ɵfac, providedIn: 'root' });
 (function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalBackdropService, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
         args: [{
                 providedIn: 'root'
             }]
-    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ComponentFactoryResolver }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ApplicationRef }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injector }]; }, null); })();
+    }], function () { return [{ type: BsHelpers }, { type: Document, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+                args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT]
+            }] }]; }, null); })();
 
 class BsModalDirective {
     constructor(config, backdropService, elementRef) {
@@ -328,11 +512,25 @@ DismissDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
             args: ['click']
         }] }); })();
 
+class BsHelpersModule {
+}
+BsHelpersModule.ɵfac = function BsHelpersModule_Factory(t) { return new (t || BsHelpersModule)(); };
+BsHelpersModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsHelpersModule });
+BsHelpersModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({});
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsHelpersModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+        args: [{
+                declarations: [],
+                exports: []
+            }]
+    }], null, null); })();
+
 class BsModalModule {
 }
 BsModalModule.ɵfac = function BsModalModule_Factory(t) { return new (t || BsModalModule)(); };
 BsModalModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsModalModule });
 BsModalModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ imports: [[
+            BsHelpersModule,
             _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
         ]] });
 (function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalModule, [{
@@ -344,6 +542,7 @@ BsModalModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["
                     DismissDirective
                 ],
                 imports: [
+                    BsHelpersModule,
                     _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
                 ],
                 exports: [
@@ -354,44 +553,9 @@ BsModalModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["
     }], null, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](BsModalModule, { declarations: [BsModalBackdropComponent,
         BsModalDirective,
-        DismissDirective], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule], exports: [BsModalDirective,
+        DismissDirective], imports: [BsHelpersModule,
+        _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule], exports: [BsModalDirective,
         DismissDirective] }); })();
-
-class BsHelpers {
-    /**
-     * Get element width, height, position from top and left of document/window,
-     */
-    offset(element) {
-        const elemBCR = element.getBoundingClientRect(), elemStyle = window.getComputedStyle(element);
-        return {
-            width: Math.ceil(elemBCR.width || element.offsetWidth)
-                + parseInt(elemStyle.getPropertyValue('margin-left'))
-                + parseInt(elemStyle.getPropertyValue('margin-right')),
-            height: Math.ceil(elemBCR.height || element.offsetHeight)
-                + parseInt(elemStyle.getPropertyValue('margin-top'))
-                + parseInt(elemStyle.getPropertyValue('margin-bottom')),
-            top: Math.ceil(elemBCR.top + (window.pageYOffset || document.documentElement.scrollTop)),
-            left: Math.ceil(elemBCR.left + (window.pageXOffset || document.documentElement.scrollLeft)),
-        };
-    }
-    /**
-     * Removes all placement classes on given element
-     */
-    setPlacementCSS(element, prefix, placement) {
-        ['top', 'left', 'right', 'bottom'].forEach((placement) => {
-            element.nativeElement.classList.remove(prefix + placement);
-        });
-        element.nativeElement.classList.add(prefix + placement);
-    }
-}
-BsHelpers.ɵfac = function BsHelpers_Factory(t) { return new (t || BsHelpers)(); };
-BsHelpers.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsHelpers, factory: BsHelpers.ɵfac, providedIn: 'root' });
-(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsHelpers, [{
-        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
-        args: [{
-                providedIn: 'root'
-            }]
-    }], null, null); })();
 
 class BsDropdownBoundaryDirective {
     constructor(elementRef) {
@@ -558,19 +722,6 @@ BsDropdownToggleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_
             args: ['click']
         }] }); })();
 
-class BsHelpersModule {
-}
-BsHelpersModule.ɵfac = function BsHelpersModule_Factory(t) { return new (t || BsHelpersModule)(); };
-BsHelpersModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsHelpersModule });
-BsHelpersModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({});
-(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsHelpersModule, [{
-        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
-        args: [{
-                declarations: [],
-                exports: []
-            }]
-    }], null, null); })();
-
 class BsDropdownModule {
 }
 BsDropdownModule.ɵfac = function BsDropdownModule_Factory(t) { return new (t || BsDropdownModule)(); };
@@ -602,6 +753,343 @@ BsDropdownModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
         BsDropdownDirective,
         BsDropdownToggleDirective] }); })();
 
+class BsTooltipConfigService {
+    constructor() {
+        this.animation = true;
+        this.delay = 0;
+        this.placement = 'bottom';
+        this.html = false;
+        this.title = '';
+        this.trigger = 'hover focus';
+    }
+}
+BsTooltipConfigService.ɵfac = function BsTooltipConfigService_Factory(t) { return new (t || BsTooltipConfigService)(); };
+BsTooltipConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsTooltipConfigService, factory: BsTooltipConfigService.ɵfac, providedIn: 'root' });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsTooltipConfigService, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], null, null); })();
+
+const _c0 = function (a0, a1) { return { "fade": a0, "show": a1 }; };
+const _c1 = ["*"];
+class BsTooltipComponent {
+    constructor(elementRef, config, helpers) {
+        this.elementRef = elementRef;
+        this.config = config;
+        this.helpers = helpers;
+        this.fadeIn = false;
+        this.titleVisible = true;
+        this._visible = true;
+        this.timeout = null;
+        this.animation = this.config.animation;
+        this.delay = this.config.delay;
+        this.placement = this.config.placement;
+        this.defaultTitle = this.config.title;
+    }
+    get visible() {
+        return this._visible;
+    }
+    set visible(visible) {
+        this._visible = visible;
+        this.toggle();
+    }
+    ngOnInit() {
+        this.elementRef.nativeElement.children[0].style.top = '0';
+        this.tooltipInner = this.elementRef.nativeElement.querySelector('.tooltip-inner');
+        if (this.visible) {
+            this.toggle();
+        }
+    }
+    ngAfterContentChecked() {
+        var _a, _b;
+        this.titleVisible = !!((_b = (_a = this.tooltipInner) === null || _a === void 0 ? void 0 : _a.textContent) === null || _b === void 0 ? void 0 : _b.trim().length);
+    }
+    toggle() {
+        if (this.timeout !== null) {
+            clearTimeout(this.timeout);
+        }
+        this.timeout = setTimeout(() => {
+            this.timeout = null;
+            if (this._visible) {
+                this.show();
+            }
+            else {
+                this.hide();
+            }
+        }, this.getDelay(this.delay));
+    }
+    show() {
+        const tooltip = this.elementRef.nativeElement.children[0];
+        if (this.parentElement) {
+            this.helpers.positionElement(tooltip, this.parentElement, this.placement, this.boundary, 'bs-tooltip-');
+        }
+        else {
+            this.helpers.setPlacementCSS(tooltip, 'bs-tooltip-', this.placement);
+            this.helpers.adjustArrow(tooltip, this.placement);
+        }
+        this.fadeIn = true;
+    }
+    hide() {
+        const tooltip = this.elementRef.nativeElement.children[0];
+        this._visible = true;
+        this.fadeIn = false;
+        const transition = () => {
+            this._visible = false;
+            tooltip.removeEventListener('transitionend', transition);
+        };
+        tooltip.addEventListener('transitionend', transition);
+    }
+    getDelay(inDelay) {
+        if (typeof inDelay === 'object') {
+            return inDelay[this.visible ? 'show' : 'hide'] || this.getDelay(this.config.delay);
+        }
+        return inDelay;
+    }
+}
+BsTooltipComponent.ɵfac = function BsTooltipComponent_Factory(t) { return new (t || BsTooltipComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsTooltipConfigService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsHelpers)); };
+BsTooltipComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: BsTooltipComponent, selectors: [["bs-tooltip"]], inputs: { visible: "visible", animation: "animation", delay: "delay", placement: "placement", parentElement: "parentElement", boundary: "boundary" }, ngContentSelectors: _c1, decls: 4, vars: 7, consts: [[1, "tooltip", 3, "ngClass", "hidden"], [1, "arrow", 3, "hidden"], [1, "tooltip-inner", 3, "hidden"]], template: function BsTooltipComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojectionDef"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "div", 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "div", 2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojection"](3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](4, _c0, ctx.animation, ctx.fadeIn))("hidden", !ctx.visible && !ctx.fadeIn);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("hidden", !ctx.titleVisible);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("hidden", !ctx.titleVisible);
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass], encapsulation: 2 });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsTooltipComponent, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+        args: [{
+                selector: 'bs-tooltip',
+                templateUrl: './bs-tooltip.component.html'
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }, { type: BsTooltipConfigService }, { type: BsHelpers }]; }, { visible: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], animation: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], delay: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], placement: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], parentElement: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], boundary: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }] }); })();
+
+class BsTooltipBoundaryDirective {
+    constructor(elementRef) {
+        this.elementRef = elementRef;
+    }
+}
+BsTooltipBoundaryDirective.ɵfac = function BsTooltipBoundaryDirective_Factory(t) { return new (t || BsTooltipBoundaryDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef)); };
+BsTooltipBoundaryDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({ type: BsTooltipBoundaryDirective, selectors: [["", "bsTooltipBoundary", ""]] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsTooltipBoundaryDirective, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+        args: [{
+                selector: '[bsTooltipBoundary]'
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
+
+/*
+ * Bootstrap 4 plugin for AngularJS.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+class BsTooltipToggleDirective {
+    constructor(config, helpers, elementRef, boundary, document) {
+        this.config = config;
+        this.helpers = helpers;
+        this.elementRef = elementRef;
+        this.boundary = boundary;
+        this.document = document;
+        this._title = '';
+        this.bsTooltipToggleChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+        this.html = config.html;
+        this.trigger = config.trigger;
+    }
+    get title() {
+        return this._title;
+    }
+    set title(title) {
+        var _a;
+        this._title = title;
+        this.elementRef.nativeElement.setAttribute('title', '');
+        if ((_a = this.tooltipComponent) === null || _a === void 0 ? void 0 : _a.instance.visible) {
+            this.tooltipComponent.destroy();
+            this.tooltipComponent = undefined;
+            this.show();
+        }
+    }
+    get bsTooltipToggle() {
+        var _a;
+        return (_a = this.tooltipComponent) === null || _a === void 0 ? void 0 : _a.instance.visible;
+    }
+    set bsTooltipToggle(visible) {
+        if (visible) {
+            this.show();
+        }
+        else {
+            this.hide();
+        }
+    }
+    showEvent(type) {
+        const triggers = this.getTriggers();
+        if ((type === 'mouseenter' && triggers.includes('hover'))
+            || (type === 'focus' && triggers.includes('focus'))) {
+            this.bsTooltipToggleChange.emit(true);
+            this.show();
+        }
+    }
+    hideEvent(type) {
+        const triggers = this.getTriggers();
+        if ((type === 'mouseleave' && triggers.includes('hover'))
+            || (type === 'blur' && triggers.includes('focus'))) {
+            this.bsTooltipToggleChange.emit(false);
+            this.hide();
+        }
+    }
+    click() {
+        var _a;
+        const visible = !!((_a = this.tooltipComponent) === null || _a === void 0 ? void 0 : _a.instance.visible);
+        this.bsTooltipToggleChange.emit(!visible);
+        if (visible) {
+            this.hide();
+        }
+        else {
+            this.show();
+        }
+    }
+    getTriggers() {
+        return this.trigger.split(' ');
+    }
+    show() {
+        if (!this.tooltipComponent) {
+            const projectableNodes = [];
+            if (this.html) {
+                const div = this.document.createElement('div');
+                div.innerHTML = this.title;
+                projectableNodes.push(div.childNodes
+                // NodeListOf<ChildNode> is accepted by projectableNodes, but TS doesn't know that
+                );
+            }
+            else {
+                projectableNodes.push([this.document.createTextNode(this.title)]);
+            }
+            this.tooltipComponent = this.helpers.createComponent(BsTooltipComponent, this.document.body, projectableNodes);
+            this.tooltipComponent.instance.parentElement = this.elementRef.nativeElement;
+        }
+        this.tooltipComponent.instance.visible = true;
+        if (this.animation) {
+            this.tooltipComponent.instance.animation = this.animation;
+        }
+        if (this.delay) {
+            this.tooltipComponent.instance.delay = this.delay;
+        }
+        if (this.placement) {
+            this.tooltipComponent.instance.placement = this.placement;
+        }
+        if (this.boundary) {
+            this.tooltipComponent.instance.boundary = this.boundary.elementRef.nativeElement;
+        }
+    }
+    hide() {
+        if (!this.tooltipComponent) {
+            return;
+        }
+        this.tooltipComponent.instance.visible = false;
+    }
+}
+BsTooltipToggleDirective.ɵfac = function BsTooltipToggleDirective_Factory(t) { return new (t || BsTooltipToggleDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsTooltipConfigService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsHelpers), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsTooltipBoundaryDirective, 9), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT)); };
+BsTooltipToggleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineDirective"]({ type: BsTooltipToggleDirective, selectors: [["", "bsTooltipToggle", ""]], hostBindings: function BsTooltipToggleDirective_HostBindings(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("mouseenter", function BsTooltipToggleDirective_mouseenter_HostBindingHandler($event) { return ctx.showEvent($event.type); })("focus", function BsTooltipToggleDirective_focus_HostBindingHandler($event) { return ctx.showEvent($event.type); })("mouseleave", function BsTooltipToggleDirective_mouseleave_HostBindingHandler($event) { return ctx.hideEvent($event.type); })("blur", function BsTooltipToggleDirective_blur_HostBindingHandler($event) { return ctx.hideEvent($event.type); })("click", function BsTooltipToggleDirective_click_HostBindingHandler() { return ctx.click(); });
+    } }, inputs: { animation: "animation", delay: "delay", html: "html", placement: "placement", trigger: "trigger", title: "title", bsTooltipToggle: "bsTooltipToggle" }, outputs: { bsTooltipToggleChange: "bsTooltipToggleChange" } });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsTooltipToggleDirective, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Directive,
+        args: [{
+                selector: '[bsTooltipToggle]'
+            }]
+    }], function () { return [{ type: BsTooltipConfigService }, { type: BsHelpers }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }, { type: BsTooltipBoundaryDirective, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Optional
+            }, {
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Host
+            }] }, { type: Document, decorators: [{
+                type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Inject,
+                args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT]
+            }] }]; }, { animation: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], delay: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], html: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], placement: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], trigger: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], title: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], bsTooltipToggle: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], bsTooltipToggleChange: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+        }], showEvent: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['mouseenter', ['$event.type']]
+        }, {
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['focus', ['$event.type']]
+        }], hideEvent: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['mouseleave', ['$event.type']]
+        }, {
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['blur', ['$event.type']]
+        }], click: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.HostListener,
+            args: ['click']
+        }] }); })();
+
+class BsTooltipModule {
+}
+BsTooltipModule.ɵfac = function BsTooltipModule_Factory(t) { return new (t || BsTooltipModule)(); };
+BsTooltipModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsTooltipModule });
+BsTooltipModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ imports: [[
+            BsHelpersModule,
+            _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
+        ]] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsTooltipModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+        args: [{
+                declarations: [
+                    BsTooltipBoundaryDirective,
+                    BsTooltipComponent,
+                    BsTooltipToggleDirective
+                ],
+                imports: [
+                    BsHelpersModule,
+                    _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
+                ],
+                exports: [
+                    BsTooltipBoundaryDirective,
+                    BsTooltipComponent,
+                    BsTooltipToggleDirective
+                ]
+            }]
+    }], null, null); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](BsTooltipModule, { declarations: [BsTooltipBoundaryDirective,
+        BsTooltipComponent,
+        BsTooltipToggleDirective], imports: [BsHelpersModule,
+        _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule], exports: [BsTooltipBoundaryDirective,
+        BsTooltipComponent,
+        BsTooltipToggleDirective] }); })();
+
 class AngularBootstrap4Module {
 }
 AngularBootstrap4Module.ɵfac = function AngularBootstrap4Module_Factory(t) { return new (t || AngularBootstrap4Module)(); };
@@ -609,10 +1097,12 @@ AngularBootstrap4Module.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
 AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ imports: [[
             BsDropdownModule,
             BsHelpersModule,
-            BsModalModule
+            BsModalModule,
+            BsTooltipModule
         ], BsDropdownModule,
         BsHelpersModule,
-        BsModalModule] });
+        BsModalModule,
+        BsTooltipModule] });
 (function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AngularBootstrap4Module, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
         args: [{
@@ -620,20 +1110,24 @@ AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
                 imports: [
                     BsDropdownModule,
                     BsHelpersModule,
-                    BsModalModule
+                    BsModalModule,
+                    BsTooltipModule
                 ],
                 exports: [
                     BsDropdownModule,
                     BsHelpersModule,
-                    BsModalModule
+                    BsModalModule,
+                    BsTooltipModule
                 ]
             }]
     }], null, null); })();
 (function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](AngularBootstrap4Module, { imports: [BsDropdownModule,
         BsHelpersModule,
-        BsModalModule], exports: [BsDropdownModule,
+        BsModalModule,
+        BsTooltipModule], exports: [BsDropdownModule,
         BsHelpersModule,
-        BsModalModule] }); })();
+        BsModalModule,
+        BsTooltipModule] }); })();
 
 /*
  * Public API Surface of angular-bootstrap4
@@ -663,8 +1157,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const _c0 = ["bsModalApi"];
 function AppComponent_li_8_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 46);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "a", 47);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 65);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "a", 66);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -692,6 +1186,8 @@ class AppComponent {
         this.dropdown = false;
         this.dropdown2 = false;
         this.dropdown3 = false;
+        this.title = 'title<br/><strong>second line</strong>';
+        this.tooltip = false;
     }
 }
 AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(); };
@@ -700,7 +1196,7 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
     } if (rf & 2) {
         let _t;
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.bsModalApi = _t.first);
-    } }, decls: 201, vars: 16, consts: [[1, "navbar", "fixed-top", "navbar-expand-lg", "navbar-light", "bg-light"], [1, "container"], ["href", "#", 1, "navbar-brand"], ["type", "button", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["bs-collapse", "navbar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], ["class", "nav-item", 4, "ngFor", "ngForOf"], ["id", "Modal"], [1, "page-header", "border-bottom"], [1, "row"], [1, "col-md-4"], [1, "btn", "btn-outline-primary", "btn-lg", 3, "click"], [1, "radio"], ["type", "radio", "value", "static", 3, "ngModel", "ngModelChange"], ["type", "radio", 3, "ngModel", "value", "ngModelChange"], [1, "checkbox"], ["type", "checkbox", 3, "ngModel", "ngModelChange"], [1, "modal", "fade", 3, "bsModal", "backdrop", "keyboard", "onBeforeChange", "bsModalChange"], ["bsModalApi", "bsModal"], [1, "modal-dialog"], [1, "modal-content"], [1, "modal-header"], [1, "modal-title"], ["type", "button", "dismiss", "modal", "aria-label", "Close", 1, "close"], ["aria-hidden", "true"], [1, "modal-body"], ["type", "button", 1, "btn", "btn-primary", "btn-large", 3, "click"], [1, "modal-footer"], ["type", "button", 1, "btn", "btn-danger", 3, "click"], [1, "modal", "fade", 3, "bsModal", "bsModalChange"], ["type", "button", "dismiss", "modal", 1, "btn", "btn-danger"], [1, "col-md-8"], [1, "table", "table-bordered", "table-striped", "js-options-table"], ["colspan", "4"], ["id", "Dropdown"], [1, "page-header"], [3, "bsDropdown", "bsDropdownChange"], ["bsDropdownToggle", "", 1, "btn", "btn-outline-primary", "dropdown-toggle"], [1, "dropdown-menu"], ["href", "#", 1, "dropdown-item"], ["href", "javascript:", 3, "click"], [1, "help-block"], ["bsDropdownBoundary", "", 1, "d-flex", "flex-column", 2, "height", "200px"], [1, "mt-auto", 3, "bsDropdown", "bsDropdownChange"], [1, "help-block", "mt-3"], [1, "nav-item"], [1, "nav-link", 3, "href"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
+    } }, decls: 399, vars: 23, consts: [[1, "navbar", "fixed-top", "navbar-expand-lg", "navbar-light", "bg-light"], [1, "container"], ["href", "#", 1, "navbar-brand"], ["type", "button", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["bs-collapse", "navbar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], ["class", "nav-item", 4, "ngFor", "ngForOf"], ["id", "Modal"], [1, "page-header", "border-bottom"], [1, "row"], [1, "col-md-4"], [1, "btn", "btn-outline-primary", "btn-lg", 3, "click"], [1, "radio"], ["type", "radio", "value", "static", 3, "ngModel", "ngModelChange"], ["type", "radio", 3, "ngModel", "value", "ngModelChange"], [1, "checkbox"], ["type", "checkbox", 3, "ngModel", "ngModelChange"], [1, "modal", "fade", 3, "bsModal", "backdrop", "keyboard", "onBeforeChange", "bsModalChange"], ["bsModalApi", "bsModal"], [1, "modal-dialog"], [1, "modal-content"], [1, "modal-header"], [1, "modal-title"], ["type", "button", "dismiss", "modal", "aria-label", "Close", 1, "close"], ["aria-hidden", "true"], [1, "modal-body"], ["type", "button", 1, "btn", "btn-primary", "btn-large", 3, "click"], [1, "modal-footer"], ["type", "button", 1, "btn", "btn-danger", 3, "click"], [1, "modal", "fade", 3, "bsModal", "bsModalChange"], ["type", "button", "dismiss", "modal", 1, "btn", "btn-danger"], [1, "col-md-8"], [1, "table", "table-bordered", "table-striped", "js-options-table"], ["colspan", "4"], ["id", "Dropdown"], [1, "page-header"], [3, "bsDropdown", "bsDropdownChange"], ["bsDropdownToggle", "", 1, "btn", "btn-outline-primary", "dropdown-toggle"], [1, "dropdown-menu"], ["href", "#", 1, "dropdown-item"], ["href", "javascript:", 3, "click"], [1, "help-block"], ["bsDropdownBoundary", "", 1, "d-flex", "flex-column", 2, "height", "200px"], [1, "mt-auto", 3, "bsDropdown", "bsDropdownChange"], [1, "help-block", "mt-3"], ["id", "Tooltip"], [1, "table", "table-bordered", "table-striped"], [1, "bs-example-tooltip", "text-center"], ["placement", "left"], ["placement", "top"], ["placement", "bottom"], ["placement", "right"], [1, "d-flex", "justify-content-center", 2, "gap", ".5rem"], ["title", "title", "placement", "left", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "right", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "top", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "bottom", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["bsTooltipBoundary", ""], ["title", "title", "placement", "auto", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], [1, "mb-3"], ["type", "button", "trigger", "click", 1, "btn", "btn-secondary", "mr-2", 3, "bsTooltipToggle", "title", "html", "bsTooltipToggleChange"], ["type", "button", 1, "btn", "btn-secondary", 3, "click"], ["type", "text", 1, "form-control", 3, "ngModel", "ngModelChange"], ["title", "Test", 1, "btn", "btn-secondary"], [1, "nav-item"], [1, "nav-link", 3, "href"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
         const _r3 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "nav", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
@@ -1045,6 +1541,307 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](200, " Optionally, you can pass boundary element (elementRef) via 'boundaryElement' binding. ");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](201, "section", 46);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](202, "h3", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](203, "Tooltip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](204, "table", 47);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](205, "thead");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](206, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](207, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](208, "Name");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](209, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](210, "Type");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](211, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](212, "Default");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](213, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](214, "Description");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](215, "tbody");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](216, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](217, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](218, "animation");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](219, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](220, "boolean");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](221, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](222, "true");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](223, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](224, "Apply a CSS fade transition to the tooltip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](225, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](226, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](227, "delay");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](228, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](229, "number | object");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](230, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](231, "0");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](232, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](233, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](234, "Delay showing and hiding the tooltip (ms)");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](235, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](236, "If a number is supplied, delay is applied to both hide/show");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](237, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](238, "Object structure is: ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](239, "code");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](240);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](241, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](242, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](243, "html");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](244, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](245, "boolean");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](246, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](247, "false");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](248, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](249, "Allow HTML in the tooltip.");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](250, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](251, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](252, "placement");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](253, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](254, "string");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](255, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](256, "'bottom'");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](257, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](258, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](259, "How to position the tooltip - top | bottom | left | right | auto.");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](260, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](261, "When \"auto\" is specified, it will dynamically reorient the tooltip. For example, if placement is \"auto left\", the tooltip will display to the left when possible, otherwise it will display right.");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](262, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](263, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](264, "title");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](265, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](266, "string");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](267, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](268, "''");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](269, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](270, "p");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](271, "Default title value if ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](272, "code");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](273, "title");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](274, " attribute isn't present.");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](275, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](276, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](277, "trigger");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](278, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](279, "string");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](280, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](281, "'hover focus'");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](282, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](283, "How tooltip is triggered - click | hover | focus. You may pass multiple triggers; separate them with a space. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](284, "tfoot");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](285, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](286, "td", 34);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](287, "small");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](288, "All option defaults are configurable in 'Tooltip' provider and can be changed via attributes. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](289, "h4", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](290, "Static tooltip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](291, "div", 48);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](292, "bs-tooltip", 49);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](293, "Tooltip on left");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](294, "bs-tooltip", 50);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](295, "Tooltip on top");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](296, "bs-tooltip", 51);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](297, "Tooltip on bottom");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](298, "bs-tooltip", 52);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](299, "Tooltip on right");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](300, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](301, "<");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](302, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](303, "bs-tooltip placement=\"left\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](304, ">Tooltip on left</");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](305, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](306, "bs-tooltip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](307, ">\n<");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](308, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](309, "bs-tooltip placement=\"top\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](310, ">Tooltip on top</");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](311, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](312, "bs-tooltip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](313, ">\n<");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](314, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](315, "bs-tooltip placement=\"bottom\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](316, ">Tooltip on bottom</");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](317, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](318, "bs-tooltip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](319, ">\n<");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](320, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](321, "bs-tooltip placement=\"right\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](322, ">Tooltip on right</");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](323, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](324, "bs-tooltip");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](325, ">");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](326, "h4", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](327, "Four directions");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](328, "div", 53);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](329, "button", 54);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](330, "Title left");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](331, "button", 55);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](332, "Title right");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](333, "button", 56);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](334, "Title top");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](335, "button", 57);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](336, "Title bottom");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](337, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](338, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](339, "<span class=\"btn btn-secondary\" ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](340, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](341, "[bsTooltipToggle] title=\"title\" placement=\"left\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](342, ">Title left</span>\n<span class=\"btn btn-secondary\" ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](343, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](344, "[bsTooltipToggle] title=\"title\" placement=\"right\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](345, ">Title right</span>\n<span class=\"btn btn-secondary\" ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](346, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](347, "[bsTooltipToggle] title=\"title\" placement=\"top\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](348, ">Title top</span>\n<span class=\"btn btn-secondary\" ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](349, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](350, "[bsTooltipToggle] title=\"title\" placement=\"bottom\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](351, ">Title bottom</span>");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](352, "div", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](353, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](354, "h4", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](355, "Auto placement & boundary element");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](356, "p", 42);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](357, "Tooltip will be adjusted to display within boundary element (red border)");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](358, "div", 58);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](359, "button", 59);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](360, "Title auto");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](361, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](362, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](363, "<div ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](364, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](365, "bsTooltipBoundary");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](366, ">\n\t<button class=\"btn btn-secondary\"\n\t\t[bsTooltipToggle] title=\"title\"\n\t\tplacement=\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](367, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](368, "auto");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](369, "\">\n\t\tTitle auto\n\t</button>\n</div>");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](370, "div", 32);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](371, "h4", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](372, "Trigger on click with bound html value & remote trigger");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](373, "div", 60);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](374, "button", 61);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("bsTooltipToggleChange", function AppComponent_Template_button_bsTooltipToggleChange_374_listener($event) { return ctx.tooltip = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](375, "Title on click");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](376, "button", 62);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function AppComponent_Template_button_click_376_listener() { return ctx.tooltip = !ctx.tooltip; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](377, " Remote trigger ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](378, "div", 60);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](379, "input", 63);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("ngModelChange", function AppComponent_Template_input_ngModelChange_379_listener($event) { return ctx.title = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](380, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](381, "<button type=\"button\" class=\"btn btn-secondary\" [(bsTooltipToggle)]=\"tooltip\" ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](382, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](383, "[title]=\"title\" html=\"true\" trigger=\"click\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](384, ">Title on click</button>\n<button type=\"button\" class=\"btn btn-secondary\" ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](385, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](386, "(click)=\"tooltip=!tooltip\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](387, ">Remote trigger</button>\n<input type=\"text\" ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](388, "strong");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](389, "[(ngModel)]=\"title\"");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](390, "/>");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](391, "h4", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](392, "Create tooltips on all elements with [title] attribute");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](393, "button", 64);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](394, "Hover me!");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](395, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](396, "br");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](397, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](398);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
@@ -1069,6 +1866,14 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsDropdown", ctx.dropdown2);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](13);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsDropdown", ctx.dropdown3);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](60);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("delay: ", "{", "show: 500, hide: 100}");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](134);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsTooltipToggle", ctx.tooltip)("title", ctx.title)("html", true);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.title);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](19);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate2"]("<button class=\"btn btn-secondary\" title=\"Test\">Hover me!</button>\n -----\n@Directive(", "{", "\n            selector: '[title]'\n})\nexport class TitleDirective extends BsTooltipToggleDirective ", "{", "\n}");
     } }, styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJhcHAuY29tcG9uZW50LmNzcyJ9 */"] });
 
 
@@ -1085,13 +1890,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "AppModule": () => (/* binding */ AppModule)
 /* harmony export */ });
-/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/platform-browser */ 9075);
+/* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/platform-browser */ 9075);
 /* harmony import */ var _app_component__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app.component */ 9795);
-/* harmony import */ var angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! angular-bootstrap4 */ 1488);
+/* harmony import */ var angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! angular-bootstrap4 */ 1488);
 /* harmony import */ var _section_directive__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./section.directive */ 4966);
-/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! @angular/forms */ 3679);
-/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 7716);
-/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/common */ 8583);
+/* harmony import */ var _angular_forms__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! @angular/forms */ 3679);
+/* harmony import */ var _title_directive__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./title.directive */ 886);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/core */ 7716);
+/* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! @angular/common */ 8583);
+
 
 
 
@@ -1104,17 +1911,18 @@ __webpack_require__.r(__webpack_exports__);
 class AppModule {
 }
 AppModule.ɵfac = function AppModule_Factory(t) { return new (t || AppModule)(); };
-AppModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineNgModule"]({ type: AppModule, bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent] });
-AppModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵdefineInjector"]({ providers: [], imports: [[
-            angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.AngularBootstrap4Module,
-            _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__.BrowserModule,
-            _angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormsModule
+AppModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineNgModule"]({ type: AppModule, bootstrap: [_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent] });
+AppModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵdefineInjector"]({ providers: [], imports: [[
+            angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.AngularBootstrap4Module,
+            _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__.BrowserModule,
+            _angular_forms__WEBPACK_IMPORTED_MODULE_6__.FormsModule
         ]] });
-(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵsetNgModuleScope"](AppModule, { declarations: [_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent,
-        _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective], imports: [angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.AngularBootstrap4Module,
-        _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__.BrowserModule,
-        _angular_forms__WEBPACK_IMPORTED_MODULE_5__.FormsModule] }); })();
-_angular_core__WEBPACK_IMPORTED_MODULE_2__["ɵɵsetComponentScope"](_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent, [_angular_common__WEBPACK_IMPORTED_MODULE_6__.NgForOf, _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.RadioControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_5__.CheckboxControlValueAccessor, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsModalDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.DismissDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsDropdownDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsDropdownToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_3__.BsDropdownBoundaryDirective], []);
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵsetNgModuleScope"](AppModule, { declarations: [_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent,
+        _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective,
+        _title_directive__WEBPACK_IMPORTED_MODULE_2__.TitleDirective], imports: [angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.AngularBootstrap4Module,
+        _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__.BrowserModule,
+        _angular_forms__WEBPACK_IMPORTED_MODULE_6__.FormsModule] }); })();
+_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵsetComponentScope"](_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent, [_angular_common__WEBPACK_IMPORTED_MODULE_7__.NgForOf, _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.RadioControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.CheckboxControlValueAccessor, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsModalDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.DismissDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownBoundaryDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipComponent, _title_directive__WEBPACK_IMPORTED_MODULE_2__.TitleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipBoundaryDirective], []);
 
 
 /***/ }),
@@ -1145,6 +1953,29 @@ class SectionDirective {
 }
 SectionDirective.ɵfac = function SectionDirective_Factory(t) { return new (t || SectionDirective)(_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdirectiveInject"](_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent, 1)); };
 SectionDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineDirective"]({ type: SectionDirective, selectors: [["section"]], inputs: { id: "id" } });
+
+
+/***/ }),
+
+/***/ 886:
+/*!*********************************************************************!*\
+  !*** ./projects/angular-bootstrap4-demo/src/app/title.directive.ts ***!
+  \*********************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "TitleDirective": () => (/* binding */ TitleDirective)
+/* harmony export */ });
+/* harmony import */ var angular_bootstrap4__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! angular-bootstrap4 */ 1488);
+/* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 7716);
+
+
+class TitleDirective extends angular_bootstrap4__WEBPACK_IMPORTED_MODULE_0__.BsTooltipToggleDirective {
+}
+TitleDirective.ɵfac = /*@__PURE__*/ function () { let ɵTitleDirective_BaseFactory; return function TitleDirective_Factory(t) { return (ɵTitleDirective_BaseFactory || (ɵTitleDirective_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"](TitleDirective)))(t || TitleDirective); }; }();
+TitleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineDirective"]({ type: TitleDirective, selectors: [["", "title", ""]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵInheritDefinitionFeature"]] });
 
 
 /***/ }),

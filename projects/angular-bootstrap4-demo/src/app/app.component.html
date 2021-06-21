@@ -218,4 +218,144 @@
             Optionally, you can pass boundary element (elementRef) via 'boundaryElement' binding.
         </p>
     </section>
+    <section id="Tooltip">
+        <h3 class="page-header">Tooltip</h3>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>animation</td>
+                    <td>boolean</td>
+                    <td>true</td>
+                    <td>Apply a CSS fade transition to the tooltip</td>
+                </tr>
+                <tr>
+                    <td>delay</td>
+                    <td>number | object</td>
+                    <td>0</td>
+                    <td><p>Delay showing and hiding the tooltip (ms)</p>
+                        <p>If a number is supplied, delay is applied to both hide/show</p>
+                        <p>Object structure is: <code>delay: {{"{"}}show: 500, hide: 100}</code></p></td>
+                </tr>
+                <tr>
+                    <td>html</td>
+                    <td>boolean</td>
+                    <td>false</td>
+                    <td>Allow HTML in the tooltip.</td>
+                </tr>
+                <tr>
+                    <td>placement</td>
+                    <td>string</td>
+                    <td>'bottom'</td>
+                    <td><p>How to position the tooltip - top | bottom | left | right | auto.<br>When "auto" is
+                        specified, it
+                        will dynamically reorient the tooltip. For example, if placement is "auto left", the tooltip
+                        will display to the left when possible, otherwise it will display right.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>title</td>
+                    <td>string</td>
+                    <td>''</td>
+                    <td><p>Default title value if <code>title</code> attribute isn't present.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>trigger</td>
+                    <td>string</td>
+                    <td>'hover focus'</td>
+                    <td>How tooltip is triggered - click | hover | focus. You may pass multiple triggers;
+                        separate them with a space.
+                    </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <small>All option defaults are configurable in 'Tooltip' provider and can be changed via
+                            attributes.
+                        </small>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <h4 class="page-header">Static tooltip</h4>
+        <div class="bs-example-tooltip text-center">
+            <bs-tooltip placement="left">Tooltip on left</bs-tooltip>
+            <bs-tooltip placement="top">Tooltip on top</bs-tooltip>
+            <bs-tooltip placement="bottom">Tooltip on bottom</bs-tooltip>
+            <bs-tooltip placement="right">Tooltip on right</bs-tooltip>
+        </div>
+        <pre>&lt;<strong>bs-tooltip placement="left"</strong>&gt;Tooltip on left&lt;/<strong>bs-tooltip</strong>&gt;
+&lt;<strong>bs-tooltip placement="top"</strong>&gt;Tooltip on top&lt;/<strong>bs-tooltip</strong>&gt;
+&lt;<strong>bs-tooltip placement="bottom"</strong>&gt;Tooltip on bottom&lt;/<strong>bs-tooltip</strong>&gt;
+&lt;<strong>bs-tooltip placement="right"</strong>&gt;Tooltip on right&lt;/<strong>bs-tooltip</strong>&gt;</pre>
+
+        <h4 class="page-header">Four directions</h4>
+        <div class="d-flex justify-content-center" style="gap: .5rem">
+            <button class="btn btn-secondary" [bsTooltipToggle] title="title" placement="left">Title left</button>
+            <button class="btn btn-secondary" [bsTooltipToggle] title="title" placement="right">Title right</button>
+            <button class="btn btn-secondary" [bsTooltipToggle] title="title" placement="top">Title top</button>
+            <button class="btn btn-secondary" [bsTooltipToggle] title="title" placement="bottom">Title bottom</button>
+        </div>
+        <br/>
+        <pre>&lt;span class="btn btn-secondary" <strong>[bsTooltipToggle] title="title" placement="left"</strong>&gt;Title left&lt;/span&gt;
+&lt;span class="btn btn-secondary" <strong>[bsTooltipToggle] title="title" placement="right"</strong>&gt;Title right&lt;/span&gt;
+&lt;span class="btn btn-secondary" <strong>[bsTooltipToggle] title="title" placement="top"</strong>&gt;Title top&lt;/span&gt;
+&lt;span class="btn btn-secondary" <strong>[bsTooltipToggle] title="title" placement="bottom"</strong>&gt;Title bottom&lt;/span&gt;</pre>
+
+        <div class="row">
+            <div class="col-md-4">
+                <h4 class="page-header">Auto placement & boundary element</h4>
+                <p class="help-block">Tooltip will be adjusted to display within boundary element (red border)</p>
+                <div bsTooltipBoundary>
+					<button class="btn btn-secondary" [bsTooltipToggle] title="title"
+                          placement="auto">Title auto</button>
+                </div>
+                <br/>
+                <pre>&lt;div <strong>bsTooltipBoundary</strong>&gt;
+	&lt;button class="btn btn-secondary"
+		[bsTooltipToggle] title="title"
+		placement="<strong>auto</strong>"&gt;
+		Title auto
+	&lt;/button&gt;
+&lt;/div&gt;</pre>
+            </div>
+            <div class="col-md-8">
+                <h4 class="page-header">Trigger on click with bound html value & remote trigger</h4>
+                <div class="mb-3">
+                    <button type="button" class="btn btn-secondary mr-2"
+                            [(bsTooltipToggle)]="tooltip" [title]="title" [html]="true"
+                            trigger="click">Title on click</button>
+                    <button type="button" class="btn btn-secondary" (click)="tooltip=!tooltip">
+                        Remote trigger
+                    </button>
+                </div>
+                <div class="mb-3">
+                    <input type="text" [(ngModel)]="title" class="form-control"/>
+                </div>
+                <pre>&lt;button type="button" class="btn btn-secondary" [(bsTooltipToggle)]="tooltip" <strong>[title]="title" html="true" trigger="click"</strong>&gt;Title on click&lt;/button&gt;
+&lt;button type="button" class="btn btn-secondary" <strong>(click)="tooltip=!tooltip"</strong>&gt;Remote trigger&lt;/button&gt;
+&lt;input type="text" <strong>[(ngModel)]="title"</strong>/&gt;</pre>
+            </div>
+        </div>
+
+        <h4 class="page-header">Create tooltips on all elements with [title] attribute</h4>
+        <button class="btn btn-secondary" title="Test">Hover me!</button>
+        <br/><br/>
+        <pre>&lt;button class="btn btn-secondary" title="Test"&gt;Hover me!&lt;/button&gt;
+ -----
+@Directive({{'{'}}
+            selector: '[title]'
+})
+export class TitleDirective extends BsTooltipToggleDirective {{'{'}}
+}</pre>
+    </section>
 </div>

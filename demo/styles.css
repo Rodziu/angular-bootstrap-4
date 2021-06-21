@@ -1215,6 +1215,11 @@ h3.page-header, h4.page-header {
 [bsDropdownBoundary], [bsPopoverBoundary], [bsTooltipBoundary] {
     border: 1px solid red;
 }
+.bs-example-tooltip .tooltip {
+    position: relative;
+    display: inline-block;
+    margin: 10px 20px;
+}
 
 
 /*# sourceMappingURL=styles.css.map*/

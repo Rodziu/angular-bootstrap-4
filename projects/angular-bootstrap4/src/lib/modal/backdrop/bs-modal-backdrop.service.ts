@@ -1,12 +1,7 @@
-import {
-    ApplicationRef,
-    ComponentFactoryResolver,
-    ComponentRef,
-    EmbeddedViewRef,
-    Injectable,
-    Injector
-} from '@angular/core';
+import {ComponentRef, Inject, Injectable} from '@angular/core';
 import {BsModalBackdropComponent} from './bs-modal-backdrop.component';
+import {BsHelpers} from '../../helpers/bs-helpers.service';
+import {DOCUMENT} from '@angular/common';
 
 @Injectable({
     providedIn: 'root'
@@ -20,9 +15,8 @@ export class BsModalBackdropService {
     }
 
     constructor(
-        private componentFactoryResolver: ComponentFactoryResolver,
-        private appRef: ApplicationRef,
-        private injector: Injector
+        private helpers: BsHelpers,
+        @Inject(DOCUMENT) private document: Document
     ) {
     }
 
@@ -31,7 +25,7 @@ export class BsModalBackdropService {
             this.createBackdropComponent();
             this.openModals++;
             this._isAnimated = animate;
-            document.body.classList.add('modal-open');
+            this.document.body.classList.add('modal-open');
             if (backdrop) {
                 setTimeout(() => { // wait for backdrop element to be fully drawn
                     this.backdropRef?.instance.show();
@@ -47,17 +41,7 @@ export class BsModalBackdropService {
         if (typeof this.backdropRef !== 'undefined') {
             return;
         }
-        const componentRef = this.componentFactoryResolver
-            .resolveComponentFactory(BsModalBackdropComponent)
-            .create(this.injector);
-
-        this.appRef.attachView(componentRef.hostView);
-
-        document.body.appendChild(
-            (componentRef.hostView as EmbeddedViewRef<BsModalBackdropComponent>)
-                .rootNodes[0] as HTMLElement
-        );
-        this.backdropRef = componentRef;
+        this.backdropRef = this.helpers.createComponent(BsModalBackdropComponent, this.document.body);
     }
 
     hide(): void {
@@ -67,7 +51,7 @@ export class BsModalBackdropService {
         }
         if (this.openModals === 0) {
             const callback = () => {
-                document.body.classList.remove('modal-open');
+                this.document.body.classList.remove('modal-open');
             }
             if (this.backdropRef) {
                 this.backdropRef.instance.hide().then(callback);

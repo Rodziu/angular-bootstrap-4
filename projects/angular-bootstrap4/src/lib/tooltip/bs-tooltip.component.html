@@ -1,0 +1,6 @@
+<div class="tooltip"
+     [ngClass]="{'fade': animation, 'show': fadeIn}"
+     [hidden]="!visible && !fadeIn">
+    <div class="arrow" [hidden]="!titleVisible"></div>
+    <div class="tooltip-inner" [hidden]="!titleVisible"><ng-content></ng-content></div>
+</div>

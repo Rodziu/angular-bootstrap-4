@@ -26,4 +26,7 @@ export class AppComponent {
     dropdown = false;
     dropdown2 = false;
     dropdown3 = false;
+
+    title = 'title<br/><strong>second line</strong>';
+    tooltip = false;
 }

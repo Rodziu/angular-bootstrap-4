@@ -5,11 +5,13 @@ import {AppComponent} from './app.component';
 import {AngularBootstrap4Module} from 'angular-bootstrap4';
 import {SectionDirective} from './section.directive';
 import {FormsModule} from '@angular/forms';
+import {TitleDirective} from './title.directive';
 
 @NgModule({
     declarations: [
         AppComponent,
-        SectionDirective
+        SectionDirective,
+        TitleDirective
     ],
     imports: [
         AngularBootstrap4Module,

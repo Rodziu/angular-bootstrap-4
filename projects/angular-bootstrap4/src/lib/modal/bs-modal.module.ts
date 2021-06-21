@@ -3,6 +3,7 @@ import {BsModalDirective} from './bs-modal.directive';
 import {CommonModule} from '@angular/common';
 import {BsModalBackdropComponent} from './backdrop/bs-modal-backdrop.component';
 import {DismissDirective} from './dismiss.directive';
+import {BsHelpersModule} from '../helpers/bs-helpers.module';
 
 @NgModule({
     declarations: [
@@ -11,6 +12,7 @@ import {DismissDirective} from './dismiss.directive';
         DismissDirective
     ],
     imports: [
+        BsHelpersModule,
         CommonModule
     ],
     exports: [

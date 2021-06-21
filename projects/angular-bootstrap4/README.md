@@ -1,4 +1,4 @@
-# Twitter Bootstrap 4 plugin for Angular
+# Bootstrap 4 plugin for Angular
 
 It's a lightweight implementation of Bootstrap 4 JavaScript plugins in pure Angular.
 
@@ -7,7 +7,7 @@ It's a lightweight implementation of Bootstrap 4 JavaScript plugins in pure Angu
 ## Prerequisites
 
 - Angular,
-- Twitter Bootstrap 4.
+- Bootstrap 4.
 
 ## Installation
 
