@@ -20,5 +20,10 @@ export * from './lib/popover/bs-popover-config.service';
 export * from './lib/popover/bs-popover.component';
 export * from './lib/popover/bs-popover-boundary.directive';
 export * from './lib/popover/bs-popover-toggle.directive';
+export * from './lib/collapse/bs-collapse.module';
+export * from './lib/collapse/bs-collapse.directive';
+export * from './lib/collapse/bs-collapse-group.directive';
+
+export * from './lib/carousel/bs-carousel-config.service';
 export * from './lib/helpers/bs-helpers.module';
 export * from './lib/angular-bootstrap4.module';

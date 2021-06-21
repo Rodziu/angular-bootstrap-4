@@ -31,4 +31,9 @@ export class AppComponent {
     tooltip = false;
 
     popover = false;
+
+    collapse = false;
+    tab1 = false;
+    tab2 = true;
+    tab3 = true;
 }
