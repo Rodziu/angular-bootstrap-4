@@ -1,0 +1,18 @@
+<div class="popover"
+     [ngClass]="{'fade': animation, 'show': fadeIn}"
+     [ngStyle]="{display: visible || fadeIn ? 'block' : 'none'}"
+     [hidden]="!visible && !fadeIn">
+    <div class="arrow"></div>
+    <div class="popover-header" [hidden]="!titleVisible && !defaultTitle">
+        <span #titleElement>
+            <ng-content select="[title]"></ng-content>
+        </span>
+        <span *ngIf="!titleVisible">{{defaultTitle}}</span>
+    </div>
+    <div class="popover-body" [hidden]="!contentVisible && !defaultContent">
+        <span #contentElement>
+            <ng-content select="[content]"></ng-content>
+        </span>
+        <span *ngIf="!contentVisible">{{defaultContent}}</span>
+    </div>
+</div>

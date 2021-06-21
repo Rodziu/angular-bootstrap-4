@@ -29,4 +29,6 @@ export class AppComponent {
 
     title = 'title<br/><strong>second line</strong>';
     tooltip = false;
+
+    popover = false;
 }

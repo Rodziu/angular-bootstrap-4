@@ -1,6 +1,9 @@
 <div class="tooltip"
      [ngClass]="{'fade': animation, 'show': fadeIn}"
      [hidden]="!visible && !fadeIn">
-    <div class="arrow" [hidden]="!titleVisible"></div>
-    <div class="tooltip-inner" [hidden]="!titleVisible"><ng-content></ng-content></div>
+    <div class="arrow" [hidden]="!titleVisible && !defaultTitle"></div>
+    <div class="tooltip-inner" [hidden]="!titleVisible && !defaultTitle">
+        <span #ngContent><ng-content></ng-content></span>
+        <span *ngIf="!titleVisible">{{defaultTitle}}</span>
+    </div>
 </div>

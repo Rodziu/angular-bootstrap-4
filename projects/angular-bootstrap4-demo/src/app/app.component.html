@@ -358,4 +358,163 @@
 export class TitleDirective extends BsTooltipToggleDirective {{'{'}}
 }</pre>
     </section>
+    <section id="Popover">
+        <h3 class="page-header">Popover</h3>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type</th>
+                    <th>Default</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>animation</td>
+                    <td>boolean</td>
+                    <td>true</td>
+                    <td>Apply a CSS fade transition to the popover</td>
+                </tr>
+                <tr>
+                    <td>content</td>
+                    <td>string</td>
+                    <td>''</td>
+                    <td><p>Default content value if <code>content</code> attribute isn't present.</p></td>
+                </tr>
+                <tr>
+                    <td>delay</td>
+                    <td>number | object</td>
+                    <td>0</td>
+                    <td><p>Delay showing and hiding the popover (ms)</p>
+                        <p>If a number is supplied, delay is applied to both hide/show</p>
+                        <p>Object structure is: <code>delay: {{'{'}}show: 500, hide: 100}</code></p></td>
+                </tr>
+                <tr>
+                    <td>html</td>
+                    <td>boolean</td>
+                    <td>false</td>
+                    <td>Allow HTML in the popover title/content.</td>
+                </tr>
+                <tr>
+                    <td>placement</td>
+                    <td>string</td>
+                    <td>'right'</td>
+                    <td><p>How to position the popover - top | bottom | left | right | auto.
+                        <br>When "auto" is specified, it will dynamically reorient the popover. For example, if
+                        placement is "auto left", the popover will display to the left when possible, otherwise it
+                        will display right.</p></td>
+                </tr>
+                <tr>
+                    <td>title</td>
+                    <td>string</td>
+                    <td>''</td>
+                    <td><p>Default title value if <code>title</code> attribute isn't present.</p></td>
+                </tr>
+                <tr>
+                    <td>trigger</td>
+                    <td>string</td>
+                    <td>'click'</td>
+                    <td>How popover is triggered - click | hover | focus. You may pass multiple triggers; separate
+                        them with a space.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <h4 class="page-header">Static popover</h4>
+        <div class="bs-example-popover">
+            <bs-popover placement="top">
+                <span title>Popover top</span>
+                <span content>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem
+                    lacinia quam venenatis vestibulum.
+                </span>
+            </bs-popover>
+            <bs-popover placement="right">
+                <span title>Popover right</span>
+                <span content>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem
+                    lacinia quam venenatis vestibulum.
+                </span>
+            </bs-popover>
+            <bs-popover placement="bottom">
+                <span title>Popover bottom</span>
+                <span content>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem
+                    lacinia quam venenatis vestibulum.
+                </span>
+            </bs-popover>
+            <bs-popover placement="left">
+                <span title>Popover left</span>
+                <span content>Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem
+                    lacinia quam venenatis vestibulum.
+                </span>
+            </bs-popover>
+            <div class="clearfix"></div>
+        </div>
+        <br/>
+        <pre>&lt;bs-popover placement="top"&gt;
+	&lt;span title&gt;Popover top&lt;/span&gt;
+	&lt;span content&gt;Sed posuere consectetur est at lobortis. Aenean eu leo quam. Pellentesque ornare sem
+		lacinia quam venenatis vestibulum.
+	&lt;/span&gt;
+&lt;/bs-popover&gt;</pre>
+
+        <h4 class="page-header">Four directions</h4>
+        <div class="d-flex justify-content-center" style="gap: .5rem">
+            <span class="btn btn-secondary" [bsPopoverToggle]
+                  content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+                  placement="left">Popover on left</span>
+            <span class="btn btn-secondary" [bsPopoverToggle]
+                  content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+                  placement="top">Popover on top</span>
+            <span class="btn btn-secondary" [bsPopoverToggle]
+                  content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+                  placement="bottom">Popover on bottom</span>
+            <span class="btn btn-secondary" [bsPopoverToggle]
+                  content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus."
+                  placement="right">Popover on right</span>
+        </div>
+        <br/>
+        <pre>&lt;span class="btn btn-secondary" <strong>[bsPopoverToggle] content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." placement="left"</strong>&gt;Popover on left&lt;/span&gt;
+&lt;span class="btn btn-secondary" <strong>[bsPopoverToggle] content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." placement="top"</strong>&gt;Popover on top&lt;/span&gt;
+&lt;span class="btn btn-secondary" <strong>[bsPopoverToggle] content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." placement="bottom"</strong>&gt;Popover on bottom&lt;/span&gt;
+&lt;span class="btn btn-secondary" <strong>[bsPopoverToggle] content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus." placement="right"</strong>&gt;Popover on right&lt;/span&gt;</pre>
+
+        <div class="row">
+            <div class="col-md-6">
+                <h4 class="page-header">Auto placement & boundary element</h4>
+                <p class="help-block">Popover will be adjusted to display within boundary element (red border)</p>
+                <div bsPopoverBoundary>
+					<span class="btn btn-secondary" [bsPopoverToggle] title="title"
+                          placement="left auto">Popover auto</span>
+                </div>
+                <br/>
+                <pre>&lt;div <strong>bsPopoverBoundary</strong>&gt;
+	&lt;span class="btn btn-secondary" [bsPopoverToggle]
+		title="title" placement="<strong>left auto</strong>"&gt;
+		Popover auto
+	&lt;/span&gt;
+&lt;/div&gt;</pre>
+            </div>
+            <div class="col-md-6">
+                <h4 class="page-header">Different trigger types</h4>
+                <div class="d-flex mb-3" style="gap: .5rem">
+                    <button type="button" class="btn btn-secondary" [bsPopoverToggle] trigger="focus" placement="bottom"
+                            content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">Popover on focus</button>
+                    <button type="button" class="btn btn-secondary" [bsPopoverToggle]="popover" trigger="hover"
+                            placement="bottom" content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
+                        Popover on hover
+                    </button>
+                    <button type="button" class="btn btn-secondary" (click)="popover=!popover">Remote trigger</button>
+                </div>
+                <pre>&lt;button type="button" class="btn btn-secondary" [bsPopoverToggle] <strong>trigger="focus"</strong>...&gt;
+	Popover on focus
+&lt;/button&gt;
+&lt;button type="button" class="btn btn-secondary" [bsPopoverToggle]="popover" <strong>trigger="hover"</strong>...&gt;
+	Popover on hover
+&lt;/button&gt;
+&lt;button type="button" class="btn btn-secondary" <strong>(click)="popover=!popover"</strong>...&gt;
+	Remote trigger
+&lt;/button&gt;</pre>
+            </div>
+        </div>
+    </section>
 </div>

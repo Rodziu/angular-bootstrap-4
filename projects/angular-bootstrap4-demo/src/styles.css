@@ -17,3 +17,11 @@ h3.page-header, h4.page-header {
     display: inline-block;
     margin: 10px 20px;
 }
+
+.bs-example-popover .popover {
+    position: relative;
+    z-index: 1;
+    float: left;
+    width: 200px;
+    margin: 20px;
+}
