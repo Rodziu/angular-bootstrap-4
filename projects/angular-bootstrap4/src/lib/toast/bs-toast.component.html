@@ -1,0 +1,6 @@
+<div class="toast"
+     [ngClass]="{'fade': animation, 'show': fadeIn}"
+     [ngStyle]="{display: visible ? 'block' : 'none'}" #toast>
+    <ng-content select="[header]"></ng-content>
+    <ng-content select="[body]"></ng-content>
+</div>

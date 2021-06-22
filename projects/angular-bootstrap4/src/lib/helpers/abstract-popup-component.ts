@@ -7,6 +7,7 @@
 
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {BsHelpers, placement} from './bs-helpers.service';
+import {AbstractFadeOutComponent} from './abstract-fade-out-component';
 
 export type bsPopupDelay = number | { show: number, hide: number };
 
@@ -23,7 +24,7 @@ export abstract class BsPopupOptions {
 @Component({
     template: ''
 })
-export abstract class AbstractPopupComponent implements OnInit {
+export abstract class AbstractPopupComponent extends AbstractFadeOutComponent implements OnInit {
     @Input() get visible(): boolean {
         return this._visible;
     }
@@ -51,6 +52,7 @@ export abstract class AbstractPopupComponent implements OnInit {
         protected config: BsPopupOptions,
         protected helpers: BsHelpers
     ) {
+        super(elementRef);
         this.animation = this.config.animation;
         this.delay = this.config.delay;
         this.placement = this.config.placement;
@@ -90,20 +92,6 @@ export abstract class AbstractPopupComponent implements OnInit {
             this.helpers.adjustArrow(popup, this.placement)
         }
         this.fadeIn = true;
-    }
-
-    protected hide(): void {
-        this.fadeIn = false;
-        if (this.animation) {
-            const popup = this.elementRef.nativeElement.children[0] as HTMLElement;
-
-            this._visible = true;
-            const transition = () => {
-                this._visible = false;
-                popup.removeEventListener('transitionend', transition);
-            };
-            popup.addEventListener('transitionend', transition);
-        }
     }
 
     protected getDelay(inDelay: bsPopupDelay): number {

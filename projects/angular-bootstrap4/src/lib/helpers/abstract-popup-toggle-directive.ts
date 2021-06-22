@@ -126,7 +126,11 @@ export abstract class AbstractPopupToggleDirective<T extends AbstractPopupCompon
             );
             this.popupComponent.instance.parentElement = this.elementRef.nativeElement;
         }
-        this.popupComponent.instance.visible = true;
+        setTimeout(() => {
+            if (this.popupComponent) {
+                this.popupComponent.instance.visible = true;
+            }
+        });
         if (this.animation) {
             this.popupComponent.instance.animation = this.animation;
         }

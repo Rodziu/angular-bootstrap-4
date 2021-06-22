@@ -7,7 +7,7 @@ import {Directive} from '@angular/core';
 import {BsTooltipToggleDirective} from 'angular-bootstrap4';
 
 @Directive({
-    selector: '[title]:not([bsPopoverToggle])'
+    selector: '[title]:not([bsPopoverToggle]):not([bsTooltipToggle])'
 })
 export class TitleDirective extends BsTooltipToggleDirective {
 }

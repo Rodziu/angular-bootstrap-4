@@ -32,6 +32,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "BsPopoverConfigService": () => (/* binding */ BsPopoverConfigService),
 /* harmony export */   "BsPopoverModule": () => (/* binding */ BsPopoverModule),
 /* harmony export */   "BsPopoverToggleDirective": () => (/* binding */ BsPopoverToggleDirective),
+/* harmony export */   "BsToastComponent": () => (/* binding */ BsToastComponent),
+/* harmony export */   "BsToastConfigService": () => (/* binding */ BsToastConfigService),
+/* harmony export */   "BsToastModule": () => (/* binding */ BsToastModule),
 /* harmony export */   "BsTooltipBoundaryDirective": () => (/* binding */ BsTooltipBoundaryDirective),
 /* harmony export */   "BsTooltipComponent": () => (/* binding */ BsTooltipComponent),
 /* harmony export */   "BsTooltipConfigService": () => (/* binding */ BsTooltipConfigService),
@@ -81,7 +84,7 @@ BsModalConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODU
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
-const _c0$3 = function (a0) { return { "fade": a0 }; };
+const _c0$4 = function (a0) { return { "fade": a0 }; };
 class BsModalBackdropComponent {
     constructor(service, elementRef) {
         this.service = service;
@@ -123,7 +126,7 @@ BsModalBackdropComponent.ɵfac = function BsModalBackdropComponent_Factory(t) { 
 BsModalBackdropComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: BsModalBackdropComponent, selectors: [["bs-modal-backdrop"]], decls: 1, vars: 3, consts: [[1, "modal-backdrop", 3, "ngClass"]], template: function BsModalBackdropComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](0, "div", 0);
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0$3, ctx.service.isAnimated));
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0$4, ctx.service.isAnimated));
     } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass], encapsulation: 2 });
 (function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsModalBackdropComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
@@ -839,6 +842,39 @@ BsDropdownModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
+// eslint-disable-next-line @angular-eslint/use-component-selector
+class AbstractFadeOutComponent {
+    constructor(elementRef) {
+        this.elementRef = elementRef;
+        this._visible = true;
+    }
+    hide() {
+        this.fadeIn = false;
+        if (this.animation) {
+            const popup = this.elementRef.nativeElement.children[0];
+            this._visible = true;
+            const transition = () => {
+                this._visible = false;
+                popup.removeEventListener('transitionend', transition);
+            };
+            popup.addEventListener('transitionend', transition);
+        }
+    }
+}
+AbstractFadeOutComponent.ɵfac = function AbstractFadeOutComponent_Factory(t) { return new (t || AbstractFadeOutComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef)); };
+AbstractFadeOutComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: AbstractFadeOutComponent, selectors: [["ng-component"]], decls: 0, vars: 0, template: function AbstractFadeOutComponent_Template(rf, ctx) { }, encapsulation: 2 });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AbstractFadeOutComponent, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+        args: [{
+                template: ''
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
+
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsPopupOptions {
     constructor() {
         this.animation = true;
@@ -850,8 +886,9 @@ class BsPopupOptions {
     }
 }
 // eslint-disable-next-line @angular-eslint/use-component-selector
-class AbstractPopupComponent {
+class AbstractPopupComponent extends AbstractFadeOutComponent {
     constructor(elementRef, config, helpers) {
+        super(elementRef);
         this.elementRef = elementRef;
         this.config = config;
         this.helpers = helpers;
@@ -902,18 +939,6 @@ class AbstractPopupComponent {
         }
         this.fadeIn = true;
     }
-    hide() {
-        this.fadeIn = false;
-        if (this.animation) {
-            const popup = this.elementRef.nativeElement.children[0];
-            this._visible = true;
-            const transition = () => {
-                this._visible = false;
-                popup.removeEventListener('transitionend', transition);
-            };
-            popup.addEventListener('transitionend', transition);
-        }
-    }
     getDelay(inDelay) {
         if (typeof inDelay === 'object') {
             return inDelay[this.visible ? 'show' : 'hide'] || this.getDelay(this.config.delay);
@@ -922,7 +947,7 @@ class AbstractPopupComponent {
     }
 }
 AbstractPopupComponent.ɵfac = function AbstractPopupComponent_Factory(t) { return new (t || AbstractPopupComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsPopupOptions), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsHelpers)); };
-AbstractPopupComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: AbstractPopupComponent, selectors: [["ng-component"]], inputs: { visible: "visible", animation: "animation", delay: "delay", placement: "placement", parentElement: "parentElement", boundary: "boundary" }, decls: 0, vars: 0, template: function AbstractPopupComponent_Template(rf, ctx) { }, encapsulation: 2 });
+AbstractPopupComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: AbstractPopupComponent, selectors: [["ng-component"]], inputs: { visible: "visible", animation: "animation", delay: "delay", placement: "placement", parentElement: "parentElement", boundary: "boundary" }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵInheritDefinitionFeature"]], decls: 0, vars: 0, template: function AbstractPopupComponent_Template(rf, ctx) { }, encapsulation: 2 });
 (function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AbstractPopupComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
         args: [{
@@ -971,7 +996,7 @@ BsTooltipConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
-const _c0$2 = ["ngContent"];
+const _c0$3 = ["ngContent"];
 function BsTooltipComponent_span_6_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
@@ -981,8 +1006,8 @@ function BsTooltipComponent_span_6_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx_r1.defaultTitle);
 } }
-const _c1$1 = function (a0, a1) { return { "fade": a0, "show": a1 }; };
-const _c2$1 = ["*"];
+const _c1$2 = function (a0, a1) { return { "fade": a0, "show": a1 }; };
+const _c2$2 = ["*"];
 class BsTooltipComponent extends AbstractPopupComponent {
     // eslint-disable-next-line @typescript-eslint/no-useless-constructor
     constructor(elementRef, config, helpers) {
@@ -1001,11 +1026,11 @@ class BsTooltipComponent extends AbstractPopupComponent {
 }
 BsTooltipComponent.ɵfac = function BsTooltipComponent_Factory(t) { return new (t || BsTooltipComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsTooltipConfigService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsHelpers)); };
 BsTooltipComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: BsTooltipComponent, selectors: [["bs-tooltip"]], viewQuery: function BsTooltipComponent_Query(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c0$2, 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c0$3, 5);
     } if (rf & 2) {
         let _t;
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.ngContent = _t.first);
-    } }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵInheritDefinitionFeature"]], ngContentSelectors: _c2$1, decls: 7, vars: 8, consts: [[1, "tooltip", 3, "ngClass", "hidden"], [1, "arrow", 3, "hidden"], [1, "tooltip-inner", 3, "hidden"], ["ngContent", ""], [4, "ngIf"]], template: function BsTooltipComponent_Template(rf, ctx) { if (rf & 1) {
+    } }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵInheritDefinitionFeature"]], ngContentSelectors: _c2$2, decls: 7, vars: 8, consts: [[1, "tooltip", 3, "ngClass", "hidden"], [1, "arrow", 3, "hidden"], [1, "tooltip-inner", 3, "hidden"], ["ngContent", ""], [4, "ngIf"]], template: function BsTooltipComponent_Template(rf, ctx) { if (rf & 1) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojectionDef"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "div", 1);
@@ -1017,7 +1042,7 @@ BsTooltipComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](5, _c1$1, ctx.animation, ctx.fadeIn))("hidden", !ctx.visible && !ctx.fadeIn);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](5, _c1$2, ctx.animation, ctx.fadeIn))("hidden", !ctx.visible && !ctx.fadeIn);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("hidden", !ctx.titleVisible && !ctx.defaultTitle);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
@@ -1113,7 +1138,11 @@ class AbstractPopupToggleDirective {
             this.popupComponent = this.helpers.createComponent(this.componentClass, this.document.body, this.getPopupProjectableNodes());
             this.popupComponent.instance.parentElement = this.elementRef.nativeElement;
         }
-        this.popupComponent.instance.visible = true;
+        setTimeout(() => {
+            if (this.popupComponent) {
+                this.popupComponent.instance.visible = true;
+            }
+        });
         if (this.animation) {
             this.popupComponent.instance.animation = this.animation;
         }
@@ -1318,8 +1347,8 @@ BsPopoverConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
-const _c0$1 = ["titleElement"];
-const _c1 = ["contentElement"];
+const _c0$2 = ["titleElement"];
+const _c1$1 = ["contentElement"];
 function BsPopoverComponent_span_6_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](1);
@@ -1338,9 +1367,9 @@ function BsPopoverComponent_span_11_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](1);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](ctx_r3.defaultContent);
 } }
-const _c2 = [[["", "title", ""]], [["", "content", ""]]];
-const _c3 = function (a0, a1) { return { "fade": a0, "show": a1 }; };
-const _c4 = function (a0) { return { display: a0 }; };
+const _c2$1 = [[["", "title", ""]], [["", "content", ""]]];
+const _c3$1 = function (a0, a1) { return { "fade": a0, "show": a1 }; };
+const _c4$1 = function (a0) { return { display: a0 }; };
 const _c5 = ["[title]", "[content]"];
 class BsPopoverComponent extends AbstractPopupComponent {
     constructor(elementRef, config, helpers) {
@@ -1361,14 +1390,14 @@ class BsPopoverComponent extends AbstractPopupComponent {
 }
 BsPopoverComponent.ɵfac = function BsPopoverComponent_Factory(t) { return new (t || BsPopoverComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsPopoverConfigService), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsHelpers)); };
 BsPopoverComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: BsPopoverComponent, selectors: [["bs-popover"]], viewQuery: function BsPopoverComponent_Query(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c0$1, 5);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c1, 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c0$2, 5);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c1$1, 5);
     } if (rf & 2) {
         let _t;
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.titleElement = _t.first);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.contentElement = _t.first);
     } }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵInheritDefinitionFeature"]], ngContentSelectors: _c5, decls: 12, vars: 12, consts: [[1, "popover", 3, "ngClass", "ngStyle", "hidden"], [1, "arrow"], [1, "popover-header", 3, "hidden"], ["titleElement", ""], [4, "ngIf"], [1, "popover-body", 3, "hidden"], ["contentElement", ""]], template: function BsPopoverComponent_Template(rf, ctx) { if (rf & 1) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojectionDef"](_c2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojectionDef"](_c2$1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](1, "div", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "div", 2);
@@ -1385,7 +1414,7 @@ BsPopoverComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](7, _c3, ctx.animation, ctx.fadeIn))("ngStyle", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](10, _c4, ctx.visible || ctx.fadeIn ? "block" : "none"))("hidden", !ctx.visible && !ctx.fadeIn);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](7, _c3$1, ctx.animation, ctx.fadeIn))("ngStyle", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](10, _c4$1, ctx.visible || ctx.fadeIn ? "block" : "none"))("hidden", !ctx.visible && !ctx.fadeIn);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](2);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("hidden", !ctx.titleVisible && !ctx.defaultTitle);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](4);
@@ -1935,7 +1964,7 @@ BsCarouselNavDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MOD
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
-const _c0 = function (a0) { return { active: a0 }; };
+const _c0$1 = function (a0) { return { active: a0 }; };
 function BsCarouselIndicatorsComponent_li_1_Template(rf, ctx) { if (rf & 1) {
     const _r4 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 2);
@@ -1944,7 +1973,7 @@ function BsCarouselIndicatorsComponent_li_1_Template(rf, ctx) { if (rf & 1) {
 } if (rf & 2) {
     const index_r2 = ctx.index;
     const ctx_r0 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnextContext"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0, index_r2 === ctx_r0.carousel.currentSlide));
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](1, _c0$1, index_r2 === ctx_r0.carousel.currentSlide));
 } }
 class BsCarouselIndicatorsComponent {
     constructor(carousel) {
@@ -2015,6 +2044,129 @@ BsCarouselModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
+class BsToastConfigService {
+    constructor() {
+        this.animation = true;
+    }
+}
+BsToastConfigService.ɵfac = function BsToastConfigService_Factory(t) { return new (t || BsToastConfigService)(); };
+BsToastConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjectable"]({ token: BsToastConfigService, factory: BsToastConfigService.ɵfac, providedIn: 'root' });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsToastConfigService, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Injectable,
+        args: [{
+                providedIn: 'root'
+            }]
+    }], null, null); })();
+
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+const _c0 = ["toast"];
+const _c1 = [[["", "header", ""]], [["", "body", ""]]];
+const _c2 = function (a0, a1) { return { "fade": a0, "show": a1 }; };
+const _c3 = function (a0) { return { display: a0 }; };
+const _c4 = ["[header]", "[body]"];
+class BsToastComponent extends AbstractFadeOutComponent {
+    constructor(elementRef, config) {
+        super(elementRef);
+        this.elementRef = elementRef;
+        this.config = config;
+        this._visible = false;
+        this.visibleChange = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.EventEmitter();
+        this.fadeIn = false;
+        this.animation = this.config.animation;
+    }
+    get visible() {
+        return this._visible;
+    }
+    set visible(visible) {
+        if (visible === this._visible) {
+            return;
+        }
+        this._visible = visible;
+        if (!visible) {
+            this.hide();
+        }
+        else {
+            setTimeout(() => {
+                this.fadeIn = true;
+            });
+        }
+    }
+    ngAfterViewInit() {
+        var _a;
+        (_a = this.toast) === null || _a === void 0 ? void 0 : _a.nativeElement.childNodes.forEach((node, idx) => {
+            node.classList.add(idx ? 'toast-body' : 'toast-header');
+        });
+    }
+}
+BsToastComponent.ɵfac = function BsToastComponent_Factory(t) { return new (t || BsToastComponent)(_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](_angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef), _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdirectiveInject"](BsToastConfigService)); };
+BsToastComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineComponent"]({ type: BsToastComponent, selectors: [["bs-toast"]], viewQuery: function BsToastComponent_Query(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵviewQuery"](_c0, 5);
+    } if (rf & 2) {
+        let _t;
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.toast = _t.first);
+    } }, inputs: { animation: "animation", visible: "visible" }, outputs: { visibleChange: "visibleChange" }, features: [_angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵInheritDefinitionFeature"]], ngContentSelectors: _c4, decls: 4, vars: 7, consts: [[1, "toast", 3, "ngClass", "ngStyle"], ["toast", ""]], template: function BsToastComponent_Template(rf, ctx) { if (rf & 1) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojectionDef"](_c1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 0, 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojection"](2);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵprojection"](3, 1);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+    } if (rf & 2) {
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngClass", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction2"](2, _c2, ctx.animation, ctx.fadeIn))("ngStyle", _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵpureFunction1"](5, _c3, ctx.visible ? "block" : "none"));
+    } }, directives: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.NgClass, _angular_common__WEBPACK_IMPORTED_MODULE_1__.NgStyle], encapsulation: 2 });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsToastComponent, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Component,
+        args: [{
+                selector: 'bs-toast',
+                templateUrl: './bs-toast.component.html'
+            }]
+    }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }, { type: BsToastConfigService }]; }, { animation: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], visible: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
+        }], visibleChange: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
+        }], toast: [{
+            type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ViewChild,
+            args: ['toast']
+        }] }); })();
+
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+class BsToastModule {
+}
+BsToastModule.ɵfac = function BsToastModule_Factory(t) { return new (t || BsToastModule)(); };
+BsToastModule.ɵmod = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineNgModule"]({ type: BsToastModule });
+BsToastModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵdefineInjector"]({ imports: [[
+            _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
+        ]] });
+(function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](BsToastModule, [{
+        type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
+        args: [{
+                declarations: [
+                    BsToastComponent
+                ],
+                imports: [
+                    _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule
+                ],
+                exports: [
+                    BsToastComponent
+                ]
+            }]
+    }], null, null); })();
+(function () { (typeof ngJitMode === "undefined" || ngJitMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵsetNgModuleScope"](BsToastModule, { declarations: [BsToastComponent], imports: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule], exports: [BsToastComponent] }); })();
+
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class AngularBootstrap4Module {
 }
 AngularBootstrap4Module.ɵfac = function AngularBootstrap4Module_Factory(t) { return new (t || AngularBootstrap4Module)(); };
@@ -2026,6 +2178,7 @@ AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
             BsHelpersModule,
             BsModalModule,
             BsPopoverModule,
+            BsToastModule,
             BsTooltipModule
         ], BsCarouselModule,
         BsCollapseModule,
@@ -2033,6 +2186,7 @@ AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
         BsHelpersModule,
         BsModalModule,
         BsPopoverModule,
+        BsToastModule,
         BsTooltipModule] });
 (function () { (typeof ngDevMode === "undefined" || ngDevMode) && _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](AngularBootstrap4Module, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.NgModule,
@@ -2045,6 +2199,7 @@ AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
                     BsHelpersModule,
                     BsModalModule,
                     BsPopoverModule,
+                    BsToastModule,
                     BsTooltipModule
                 ],
                 exports: [
@@ -2054,6 +2209,7 @@ AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
                     BsHelpersModule,
                     BsModalModule,
                     BsPopoverModule,
+                    BsToastModule,
                     BsTooltipModule
                 ]
             }]
@@ -2064,12 +2220,14 @@ AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
         BsHelpersModule,
         BsModalModule,
         BsPopoverModule,
+        BsToastModule,
         BsTooltipModule], exports: [BsCarouselModule,
         BsCollapseModule,
         BsDropdownModule,
         BsHelpersModule,
         BsModalModule,
         BsPopoverModule,
+        BsToastModule,
         BsTooltipModule] }); })();
 
 /*
@@ -2102,8 +2260,8 @@ __webpack_require__.r(__webpack_exports__);
 
 const _c0 = ["bsModalApi"];
 function AppComponent_li_8_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 105);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "a", 106);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "li", 112);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "a", 113);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](2);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -2115,14 +2273,14 @@ function AppComponent_li_8_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate"](n_r3);
 } }
 function AppComponent_div_727_Template(rf, ctx) { if (rf & 1) {
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 107);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "div", 114);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵnamespaceSVG"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "svg", 108);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "svg", 115);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "title");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](3, "Placeholder");
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](4, "rect", 109);
-    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "text", 110);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelement"](4, "rect", 116);
+    _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](5, "text", 117);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](6);
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
@@ -2157,6 +2315,7 @@ class AppComponent {
         this.tab2 = true;
         this.tab3 = true;
         this.carouselItems = ['First', 'Second', 'Third'];
+        this.toast = false;
     }
 }
 AppComponent.ɵfac = function AppComponent_Factory(t) { return new (t || AppComponent)(); };
@@ -2165,7 +2324,7 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
     } if (rf & 2) {
         let _t;
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵqueryRefresh"](_t = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵloadQuery"]()) && (ctx.bsModalApi = _t.first);
-    } }, decls: 757, vars: 30, consts: [[1, "navbar", "fixed-top", "navbar-expand-lg", "navbar-light", "bg-light"], [1, "container"], ["href", "#", 1, "navbar-brand"], ["type", "button", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["bs-collapse", "navbar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], ["class", "nav-item", 4, "ngFor", "ngForOf"], ["id", "Modal"], [1, "page-header", "border-bottom"], [1, "row"], [1, "col-md-4"], [1, "btn", "btn-outline-primary", "btn-lg", 3, "click"], [1, "radio"], ["type", "radio", "value", "static", 3, "ngModel", "ngModelChange"], ["type", "radio", 3, "ngModel", "value", "ngModelChange"], [1, "checkbox"], ["type", "checkbox", 3, "ngModel", "ngModelChange"], [1, "modal", "fade", 3, "bsModal", "backdrop", "keyboard", "onBeforeChange", "bsModalChange"], ["bsModalApi", "bsModal"], [1, "modal-dialog"], [1, "modal-content"], [1, "modal-header"], [1, "modal-title"], ["type", "button", "dismiss", "modal", "aria-label", "Close", 1, "close"], ["aria-hidden", "true"], [1, "modal-body"], ["type", "button", 1, "btn", "btn-primary", "btn-large", 3, "click"], [1, "modal-footer"], ["type", "button", 1, "btn", "btn-danger", 3, "click"], [1, "modal", "fade", 3, "bsModal", "bsModalChange"], ["type", "button", "dismiss", "modal", 1, "btn", "btn-danger"], [1, "col-md-8"], [1, "table", "table-bordered", "table-striped", "js-options-table"], ["colspan", "4"], ["id", "Dropdown"], [1, "page-header"], [3, "bsDropdown", "bsDropdownChange"], ["bsDropdownToggle", "", 1, "btn", "btn-outline-primary", "dropdown-toggle"], [1, "dropdown-menu"], ["href", "#", 1, "dropdown-item"], ["href", "javascript:", 3, "click"], [1, "help-block"], ["bsDropdownBoundary", "", 1, "d-flex", "flex-column", 2, "height", "200px"], [1, "mt-auto", 3, "bsDropdown", "bsDropdownChange"], [1, "help-block", "mt-3"], ["id", "Tooltip"], [1, "table", "table-bordered", "table-striped"], [1, "bs-example-tooltip", "text-center"], ["placement", "left"], ["placement", "top"], ["placement", "bottom"], ["placement", "right"], [1, "d-flex", "justify-content-center", 2, "gap", ".5rem"], ["title", "title", "placement", "left", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "right", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "top", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "bottom", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["bsTooltipBoundary", ""], ["title", "title", "placement", "auto", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], [1, "mb-3"], ["type", "button", "trigger", "click", 1, "btn", "btn-secondary", "mr-2", 3, "bsTooltipToggle", "title", "html", "bsTooltipToggleChange"], ["type", "button", 1, "btn", "btn-secondary", 3, "click"], ["type", "text", 1, "form-control", 3, "ngModel", "ngModelChange"], ["title", "Test", 1, "btn", "btn-secondary"], ["id", "Popover"], [1, "bs-example-popover"], ["title", ""], ["content", ""], [1, "clearfix"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "left", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "top", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "bottom", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "right", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], [1, "col-md-6"], ["bsPopoverBoundary", ""], ["title", "title", "placement", "left auto", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], [1, "d-flex", "mb-3", 2, "gap", ".5rem"], ["type", "button", "trigger", "focus", "placement", "bottom", "content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["type", "button", "trigger", "hover", "placement", "bottom", "content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["id", "Collapse"], [1, "alert", "alert-warning"], [1, "btn", "btn-outline-primary", 3, "click"], [3, "bsCollapse"], [1, "card", "card-body"], ["bsCollapseGroup", "", 1, "accordion"], [1, "card"], [1, "card-header"], [1, "mb-0"], ["role", "button", 1, "btn", "btn-link", 3, "click"], ["id", "collapseOne", 3, "bsCollapse", "bsCollapseChange"], [1, "card-body"], [1, "btn", "btn-link", 3, "click"], ["id", "collapseTwo", 1, "panel-collapse", 3, "bsCollapse", "bsCollapseChange"], ["ng-init", "tab3=true", 1, "mb-0"], ["id", "collapseThree", 1, "panel-collapse", 3, "bsCollapse", "bsCollapseChange"], ["id", "Carousel"], ["bsCarousel", "", "tabindex", "0", 1, "carousel"], [1, "carousel-inner"], ["class", "carousel-item", "bsCarouselItem", "", 4, "ngFor", "ngForOf"], ["href", "javascript:", "bsCarouselNav", "left", 1, "carousel-control-prev"], [1, "carousel-control-prev-icon"], [1, "sr-only"], ["href", "javascript:", "bsCarouselNav", "right", 1, "carousel-control-next"], [1, "carousel-control-next-icon"], [1, "nav-item"], [1, "nav-link", 3, "href"], ["bsCarouselItem", "", 1, "carousel-item"], ["width", "800", "height", "400", "xmlns", "http://www.w3.org/2000/svg", "preserveAspectRatio", "xMidYMid slice", "focusable", "false", "role", "img", 1, "d-block", "w-100", "bs-example-carousel-item"], ["width", "100%", "height", "100%", "fill", "#666"], ["x", "50%", "y", "50%", "fill", "#444", "dy", ".3em"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
+    } }, decls: 804, vars: 31, consts: [[1, "navbar", "fixed-top", "navbar-expand-lg", "navbar-light", "bg-light"], [1, "container"], ["href", "#", 1, "navbar-brand"], ["type", "button", 1, "navbar-toggler", 3, "click"], [1, "navbar-toggler-icon"], ["bs-collapse", "navbar", 1, "collapse", "navbar-collapse"], [1, "navbar-nav", "mr-auto"], ["class", "nav-item", 4, "ngFor", "ngForOf"], ["id", "Modal"], [1, "page-header", "border-bottom"], [1, "row"], [1, "col-md-4"], [1, "btn", "btn-outline-primary", "btn-lg", 3, "click"], [1, "radio"], ["type", "radio", "value", "static", 3, "ngModel", "ngModelChange"], ["type", "radio", 3, "ngModel", "value", "ngModelChange"], [1, "checkbox"], ["type", "checkbox", 3, "ngModel", "ngModelChange"], [1, "modal", "fade", 3, "bsModal", "backdrop", "keyboard", "onBeforeChange", "bsModalChange"], ["bsModalApi", "bsModal"], [1, "modal-dialog"], [1, "modal-content"], [1, "modal-header"], [1, "modal-title"], ["type", "button", "dismiss", "modal", "aria-label", "Close", 1, "close"], ["aria-hidden", "true"], [1, "modal-body"], ["type", "button", 1, "btn", "btn-primary", "btn-large", 3, "click"], [1, "modal-footer"], ["type", "button", 1, "btn", "btn-danger", 3, "click"], [1, "modal", "fade", 3, "bsModal", "bsModalChange"], ["type", "button", "dismiss", "modal", 1, "btn", "btn-danger"], [1, "col-md-8"], [1, "table", "table-bordered", "table-striped", "js-options-table"], ["colspan", "4"], ["id", "Dropdown"], [1, "page-header"], [3, "bsDropdown", "bsDropdownChange"], ["bsDropdownToggle", "", 1, "btn", "btn-outline-primary", "dropdown-toggle"], [1, "dropdown-menu"], ["href", "#", 1, "dropdown-item"], ["href", "javascript:", 3, "click"], [1, "help-block"], ["bsDropdownBoundary", "", 1, "d-flex", "flex-column", 2, "height", "200px"], [1, "mt-auto", 3, "bsDropdown", "bsDropdownChange"], [1, "help-block", "mt-3"], ["id", "Tooltip"], [1, "table", "table-bordered", "table-striped"], [1, "bs-example-tooltip", "text-center"], ["placement", "left"], ["placement", "top"], ["placement", "bottom"], ["placement", "right"], [1, "d-flex", "justify-content-center", 2, "gap", ".5rem"], ["title", "title", "placement", "left", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "right", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "top", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["title", "title", "placement", "bottom", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], ["bsTooltipBoundary", ""], ["title", "title", "placement", "auto", 1, "btn", "btn-secondary", 3, "bsTooltipToggle"], [1, "mb-3"], ["type", "button", "trigger", "click", 1, "btn", "btn-secondary", "mr-2", 3, "bsTooltipToggle", "title", "html", "bsTooltipToggleChange"], ["type", "button", 1, "btn", "btn-secondary", 3, "click"], ["type", "text", 1, "form-control", 3, "ngModel", "ngModelChange"], ["title", "Test", 1, "btn", "btn-secondary"], ["id", "Popover"], [1, "bs-example-popover"], ["title", ""], ["content", ""], [1, "clearfix"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "left", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "top", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "bottom", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", "placement", "right", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], [1, "col-md-6"], ["bsPopoverBoundary", ""], ["title", "title", "placement", "left auto", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], [1, "d-flex", "mb-3", 2, "gap", ".5rem"], ["type", "button", "trigger", "focus", "placement", "bottom", "content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["type", "button", "trigger", "hover", "placement", "bottom", "content", "Vivamus sagittis lacus vel augue laoreet rutrum faucibus.", 1, "btn", "btn-secondary", 3, "bsPopoverToggle"], ["id", "Collapse"], [1, "alert", "alert-warning"], [1, "btn", "btn-outline-primary", 3, "click"], [3, "bsCollapse"], [1, "card", "card-body"], ["bsCollapseGroup", "", 1, "accordion"], [1, "card"], [1, "card-header"], [1, "mb-0"], ["role", "button", 1, "btn", "btn-link", 3, "click"], ["id", "collapseOne", 3, "bsCollapse", "bsCollapseChange"], [1, "card-body"], [1, "btn", "btn-link", 3, "click"], ["id", "collapseTwo", 1, "panel-collapse", 3, "bsCollapse", "bsCollapseChange"], ["ng-init", "tab3=true", 1, "mb-0"], ["id", "collapseThree", 1, "panel-collapse", 3, "bsCollapse", "bsCollapseChange"], ["id", "Carousel"], ["bsCarousel", "", "tabindex", "0", 1, "carousel"], [1, "carousel-inner"], ["class", "carousel-item", "bsCarouselItem", "", 4, "ngFor", "ngForOf"], ["href", "javascript:", "bsCarouselNav", "left", 1, "carousel-control-prev"], [1, "carousel-control-prev-icon"], [1, "sr-only"], ["href", "javascript:", "bsCarouselNav", "right", 1, "carousel-control-next"], [1, "carousel-control-next-icon"], ["id", "Toasts"], ["type", "button", 1, "btn", "btn-outline-primary", "mb-3", 3, "click"], [3, "visible", "visibleChange"], ["header", ""], [1, "mr-auto"], ["type", "button", 1, "ml-2", "mb-1", "close", 3, "click"], ["body", ""], [1, "nav-item"], [1, "nav-link", 3, "href"], ["bsCarouselItem", "", 1, "carousel-item"], ["width", "800", "height", "400", "xmlns", "http://www.w3.org/2000/svg", "preserveAspectRatio", "xMidYMid slice", "focusable", "false", "role", "img", 1, "d-block", "w-100", "bs-example-carousel-item"], ["width", "100%", "height", "100%", "fill", "#666"], ["x", "50%", "y", "50%", "fill", "#444", "dy", ".3em"]], template: function AppComponent_Template(rf, ctx) { if (rf & 1) {
         const _r5 = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵgetCurrentView"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "nav", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
@@ -3362,6 +3521,87 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](756, ">\n\t\t<span class=\"glyphicon glyphicon-chevron-right\"></span>\n\t\t<span class=\"sr-only\">Next</span>\n\t</a>\n</div>");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](757, "section", 105);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](758, "h3", 36);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](759, "Toasts");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](760, "div", 10);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](761, "div", 11);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](762, "button", 106);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function AppComponent_Template_button_click_762_listener() { return ctx.toast = true; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](763, " Show toast ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](764, "bs-toast", 107);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("visibleChange", function AppComponent_Template_bs_toast_visibleChange_764_listener($event) { return ctx.toast = $event; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](765, "div", 108);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](766, "strong", 109);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](767, "Bootstrap");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](768, "small");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](769, "11 mins ago");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](770, "button", 110);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function AppComponent_Template_button_click_770_listener() { return ctx.toast = false; });
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](771, "span");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](772, "\u00D7");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](773, "div", 111);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](774, " Hello, world! This is a toast message. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](775, "div", 32);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](776, "pre");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](777, "<button type=\"button\" class=\"btn btn-outline-primary mb-3\" ng-click=\"$root.toast=true\">\n\tShow toast\n</button>\n<bs-toast visible=\"$root.toast\">\n\t<bs-toast-header>\n\t\t<strong class=\"mr-auto\">Bootstrap</strong>\n\t\t<small>11 mins ago</small>\n\t\t<button type=\"button\" class=\"ml-2 mb-1 close\" ng-click=\"$root.toast=false\">\n\t\t\t<span>\u00D7</span>\n\t\t</button>\n\t</bs-toast-header>\n\t<bs-toast-body>\n\t\tHello, world! This is a toast message.\n\t</bs-toast-body>\n</bs-toast>");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](778, "table", 47);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](779, "thead");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](780, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](781, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](782, "Name");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](783, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](784, "Type");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](785, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](786, "Default");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](787, "th");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](788, "Description");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](789, "tbody");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](790, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](791, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](792, "animation");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](793, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](794, "boolean");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](795, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](796, "true");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](797, "td");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](798, "Apply a CSS fade transition to the toast");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](799, "tfoot");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](800, "tr");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](801, "td", 34);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](802, "small");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](803, "All option defaults are configurable in 'BsToastConfigService' and can be changed via bindings. ");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
     } if (rf & 2) {
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
@@ -3393,7 +3633,7 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](5);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngModel", ctx.title);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](19);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate2"]("<button class=\"btn btn-secondary\" title=\"Test\">Hover me!</button>\n -----\n@Directive(", "{", "\n            selector: '[title]'\n})\nexport class TitleDirective extends BsTooltipToggleDirective ", "{", "\n            }");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate2"]("<button class=\"btn btn-secondary\" title=\"Test\">Hover me!</button>\n -----\n@Directive(", "{", "\n            selector: '[title]:not([bsPopoverToggle]):not([bsTooltipToggle])'\n})\nexport class TitleDirective extends BsTooltipToggleDirective ", "{", "\n            }");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](53);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("delay: ", "{", "show: 500, hide: 100}");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](121);
@@ -3408,6 +3648,8 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsCollapse", ctx.tab3);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](96);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("ngForOf", ctx.carouselItems);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](37);
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("visible", ctx.toast);
     } }, styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O0VBSUUiLCJmaWxlIjoiYXBwLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxuICogQm9vdHN0cmFwIDQgcGx1Z2luIGZvciBBbmd1bGFyLlxuICogQ29weXJpZ2h0IChjKSAyMDE2LTIwMjEgUm9keml1IDxtYXRldXN6LnJvaGRlQGdtYWlsLmNvbT5cbiAqIExpY2Vuc2U6IE1JVFxuICovXG5cbiJdfQ== */"] });
 
 
@@ -3456,7 +3698,7 @@ AppModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵ
         _title_directive__WEBPACK_IMPORTED_MODULE_2__.TitleDirective], imports: [angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.AngularBootstrap4Module,
         _angular_platform_browser__WEBPACK_IMPORTED_MODULE_5__.BrowserModule,
         _angular_forms__WEBPACK_IMPORTED_MODULE_6__.FormsModule] }); })();
-_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵsetComponentScope"](_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent, [_angular_common__WEBPACK_IMPORTED_MODULE_7__.NgForOf, _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.RadioControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.CheckboxControlValueAccessor, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsModalDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.DismissDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownBoundaryDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipComponent, _title_directive__WEBPACK_IMPORTED_MODULE_2__.TitleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipBoundaryDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsPopoverComponent, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsPopoverToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsPopoverBoundaryDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCollapseDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCollapseGroupDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselIndicatorsComponent, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselItemDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselNavDirective], []);
+_angular_core__WEBPACK_IMPORTED_MODULE_3__["ɵɵsetComponentScope"](_app_component__WEBPACK_IMPORTED_MODULE_0__.AppComponent, [_angular_common__WEBPACK_IMPORTED_MODULE_7__.NgForOf, _section_directive__WEBPACK_IMPORTED_MODULE_1__.SectionDirective, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.RadioControlValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.DefaultValueAccessor, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.NgControlStatus, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.NgModel, _angular_forms__WEBPACK_IMPORTED_MODULE_6__.CheckboxControlValueAccessor, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsModalDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.DismissDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsDropdownBoundaryDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipComponent, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsTooltipBoundaryDirective, _title_directive__WEBPACK_IMPORTED_MODULE_2__.TitleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsPopoverComponent, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsPopoverToggleDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsPopoverBoundaryDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCollapseDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCollapseGroupDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselIndicatorsComponent, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselItemDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsCarouselNavDirective, angular_bootstrap4__WEBPACK_IMPORTED_MODULE_4__.BsToastComponent], []);
 
 
 /***/ }),
@@ -3509,7 +3751,7 @@ __webpack_require__.r(__webpack_exports__);
 class TitleDirective extends angular_bootstrap4__WEBPACK_IMPORTED_MODULE_0__.BsTooltipToggleDirective {
 }
 TitleDirective.ɵfac = /*@__PURE__*/ function () { let ɵTitleDirective_BaseFactory; return function TitleDirective_Factory(t) { return (ɵTitleDirective_BaseFactory || (ɵTitleDirective_BaseFactory = _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵgetInheritedFactory"](TitleDirective)))(t || TitleDirective); }; }();
-TitleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineDirective"]({ type: TitleDirective, selectors: [["", "title", "", 3, "bsPopoverToggle", ""]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵInheritDefinitionFeature"]] });
+TitleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵdefineDirective"]({ type: TitleDirective, selectors: [["", "title", "", 3, "bsPopoverToggle", "", 3, "bsTooltipToggle", ""]], features: [_angular_core__WEBPACK_IMPORTED_MODULE_1__["ɵɵInheritDefinitionFeature"]] });
 
 
 /***/ }),
