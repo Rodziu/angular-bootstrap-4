@@ -279,8 +279,8 @@
             <tfoot>
                 <tr>
                     <td colspan="4">
-                        <small>All option defaults are configurable in 'Tooltip' provider and can be changed via
-                            attributes.
+                        <small>All option defaults are configurable in 'BsTooltipConfigService' and can be changed via
+                            bindings.
                         </small>
                     </td>
                 </tr>
@@ -316,8 +316,9 @@
                 <h4 class="page-header">Auto placement & boundary element</h4>
                 <p class="help-block">Tooltip will be adjusted to display within boundary element (red border)</p>
                 <div bsTooltipBoundary>
-					<button class="btn btn-secondary" [bsTooltipToggle] title="title"
-                          placement="auto">Title auto</button>
+                    <button class="btn btn-secondary" [bsTooltipToggle] title="title"
+                            placement="auto">Title auto
+                    </button>
                 </div>
                 <br/>
                 <pre>&lt;div <strong>bsTooltipBoundary</strong>&gt;
@@ -333,7 +334,8 @@
                 <div class="mb-3">
                     <button type="button" class="btn btn-secondary mr-2"
                             [(bsTooltipToggle)]="tooltip" [title]="title" [html]="true"
-                            trigger="click">Title on click</button>
+                            trigger="click">Title on click
+                    </button>
                     <button type="button" class="btn btn-secondary" (click)="tooltip=!tooltip">
                         Remote trigger
                     </button>
@@ -356,7 +358,7 @@
             selector: '[title]'
 })
 export class TitleDirective extends BsTooltipToggleDirective {{'{'}}
-}</pre>
+            }</pre>
     </section>
     <section id="Popover">
         <h3 class="page-header">Popover</h3>
@@ -498,7 +500,8 @@ export class TitleDirective extends BsTooltipToggleDirective {{'{'}}
                 <h4 class="page-header">Different trigger types</h4>
                 <div class="d-flex mb-3" style="gap: .5rem">
                     <button type="button" class="btn btn-secondary" [bsPopoverToggle] trigger="focus" placement="bottom"
-                            content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">Popover on focus</button>
+                            content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">Popover on focus
+                    </button>
                     <button type="button" class="btn btn-secondary" [bsPopoverToggle]="popover" trigger="hover"
                             placement="bottom" content="Vivamus sagittis lacus vel augue laoreet rutrum faucibus.">
                         Popover on hover
@@ -640,6 +643,95 @@ export class TitleDirective extends BsTooltipToggleDirective {{'{'}}
 			&lt;div class="panel-body"&gt;...&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
+&lt;/div&gt;</pre>
+    </section>
+    <section id="Carousel">
+        <h3 class="page-header">Carousel</h3>
+        <table class="table table-bordered table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>type</th>
+                    <th>default</th>
+                    <th>description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>interval</td>
+                    <td>number</td>
+                    <td>5000</td>
+                    <td>The amount of time to delay between automatically cycling an item. If false, carousel will not
+                        automatically cycle.
+                    </td>
+                </tr>
+                <tr>
+                    <td>pause</td>
+                    <td>string | null</td>
+                    <td>"hover"</td>
+                    <td>If set to <code>"hover"</code>, pauses the cycling of the carousel on <code>mouseenter</code>
+                        and resumes the cycling of the carousel on <code>mouseleave</code>. If set to <code>null</code>,
+                        hovering over the carousel won't pause it.
+                    </td>
+                </tr>
+                <tr>
+                    <td>wrap</td>
+                    <td>boolean</td>
+                    <td>true</td>
+                    <td>Whether the carousel should cycle continuously or have hard stops.</td>
+                </tr>
+                <tr>
+                    <td>keyboard</td>
+                    <td>boolean</td>
+                    <td>true</td>
+                    <td>
+                        Whether the carousel should react to keyboard events.
+                        You need to set a <code>tabindex</code> attribute on carousel for this to work.
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="carousel" bsCarousel tabindex="0">
+            <bs-carousel-indicators></bs-carousel-indicators>
+            <div class="carousel-inner">
+                <div class="carousel-item" bsCarouselItem *ngFor="let item of carouselItems">
+                    <svg class="d-block w-100 bs-example-carousel-item" width="800" height="400"
+                         xmlns="http://www.w3.org/2000/svg"
+                         preserveAspectRatio="xMidYMid slice" focusable="false" role="img">
+                        <title>Placeholder</title>
+                        <rect width="100%" height="100%" fill="#666"></rect>
+                        <text x="50%" y="50%" fill="#444" dy=".3em">{{item}} slide</text>
+                    </svg>
+                </div>
+            </div>
+            <a href="javascript:" class="carousel-control-prev" bsCarouselNav="left">
+                <span class="carousel-control-prev-icon"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a href="javascript:" class="carousel-control-next" bsCarouselNav="right">
+                <span class="carousel-control-next-icon"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+        <br/>
+        <pre>&lt;div class="carousel" <strong>bsCarousel tabindex="0"</strong>&gt;
+	<strong>&lt;bs-carousel-indicators&gt;&lt;/bs-carousel-indicators&gt;</strong>
+	&lt;div class="carousel-inner"&gt;
+		&lt;div class="item" <strong>bsCarouselItem</strong>&gt;
+			&lt;img alt="..." src="..."/&gt;
+		&lt;/div&gt;
+		&lt;div class="item" <strong>bsCarouselItem</strong>&gt;
+			&lt;img alt="..." src="..."/&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href="#" class="left carousel-control" <strong>bsCarouselNav="left"</strong>&gt;
+		&lt;span class="glyphicon glyphicon-chevron-left"&gt;&lt;/span&gt;
+		&lt;span class="sr-only"&gt;Previous&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;a href="#" class="right carousel-control" <strong>bsCarouselNav="right"</strong>&gt;
+		&lt;span class="glyphicon glyphicon-chevron-right"&gt;&lt;/span&gt;
+		&lt;span class="sr-only"&gt;Next&lt;/span&gt;
+	&lt;/a&gt;
 &lt;/div&gt;</pre>
     </section>
 </div>

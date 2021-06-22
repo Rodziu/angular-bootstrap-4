@@ -1,0 +1,4 @@
+<ol class="carousel-indicators">
+    <li *ngFor="let slide of carousel.items; index as index" (click)="carousel.slideTo(index)"
+        [ngClass]="{active: index === carousel.currentSlide}"></li>
+</ol>

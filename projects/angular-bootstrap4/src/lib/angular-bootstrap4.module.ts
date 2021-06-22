@@ -11,10 +11,12 @@ import {BsHelpersModule} from './helpers/bs-helpers.module';
 import {BsTooltipModule} from './tooltip/bs-tooltip.module';
 import {BsPopoverModule} from './popover/bs-popover.module';
 import {BsCollapseModule} from './collapse/bs-collapse.module';
+import {BsCarouselModule} from './carousel/bs-carousel.module';
 
 @NgModule({
     declarations: [],
     imports: [
+        BsCarouselModule,
         BsCollapseModule,
         BsDropdownModule,
         BsHelpersModule,
@@ -23,6 +25,7 @@ import {BsCollapseModule} from './collapse/bs-collapse.module';
         BsTooltipModule
     ],
     exports: [
+        BsCarouselModule,
         BsCollapseModule,
         BsDropdownModule,
         BsHelpersModule,

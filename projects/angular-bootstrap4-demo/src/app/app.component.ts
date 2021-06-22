@@ -42,4 +42,6 @@ export class AppComponent {
     tab1 = false;
     tab2 = true;
     tab3 = true;
+
+    carouselItems = ['First', 'Second', 'Third'];
 }

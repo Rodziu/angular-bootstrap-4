@@ -24,7 +24,11 @@ export * from './lib/popover/bs-popover-toggle.directive';
 export * from './lib/collapse/bs-collapse.module';
 export * from './lib/collapse/bs-collapse.directive';
 export * from './lib/collapse/bs-collapse-group.directive';
-
+export * from './lib/carousel/bs-carousel.module';
 export * from './lib/carousel/bs-carousel-config.service';
+export * from './lib/carousel/bs-carousel-item.directive';
+export * from './lib/carousel/bs-carousel-indicators.component';
+export * from './lib/carousel/bs-carousel-nav.directive';
+export * from './lib/carousel/bs-carousel.directive';
 export * from './lib/helpers/bs-helpers.module';
 export * from './lib/angular-bootstrap4.module';
