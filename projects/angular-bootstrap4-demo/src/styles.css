@@ -1,4 +1,8 @@
-/* You can add global styles to this file, and also import other style files */
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 @import "../../../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 h3.page-header, h4.page-header {

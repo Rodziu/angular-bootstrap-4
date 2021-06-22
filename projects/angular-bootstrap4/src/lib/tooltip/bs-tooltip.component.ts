@@ -1,3 +1,9 @@
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+
 import {AfterContentChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import {BsTooltipConfigService} from './bs-tooltip-config.service';
 import {BsHelpers} from '../helpers/bs-helpers.service';

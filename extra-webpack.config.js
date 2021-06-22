@@ -1,3 +1,9 @@
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+
 const path = require('path');
 
 module.exports = {

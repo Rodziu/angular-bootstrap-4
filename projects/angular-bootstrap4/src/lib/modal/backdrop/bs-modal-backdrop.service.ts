@@ -1,3 +1,9 @@
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+
 import {ComponentRef, Inject, Injectable} from '@angular/core';
 import {BsModalBackdropComponent} from './bs-modal-backdrop.component';
 import {BsHelpers} from '../../helpers/bs-helpers.service';

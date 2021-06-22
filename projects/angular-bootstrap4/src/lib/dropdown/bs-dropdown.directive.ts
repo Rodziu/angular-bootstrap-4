@@ -1,3 +1,9 @@
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+
 import {Directive, ElementRef, EventEmitter, Host, HostListener, Input, OnInit, Optional, Output} from '@angular/core';
 import {BsDropdownBoundaryDirective} from './bs-dropdown-boundary.directive';
 import {BsHelpers} from '../helpers/bs-helpers.service';

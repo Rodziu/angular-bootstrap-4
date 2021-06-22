@@ -1,7 +1,8 @@
 /*
- * Public API Surface of angular-bootstrap4
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
  */
-
 export * from './lib/modal/bs-modal.module';
 export * from './lib/modal/bs-modal-config.service';
 export * from './lib/modal/bs-modal.directive';

@@ -36,9 +36,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/core */ 7716);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/common */ 8583);
-/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/animations */ 238);
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/animations */ 7238);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/platform-browser */ 9075);
-/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/platform-browser/animations */ 835);
+/* harmony import */ var _angular_platform_browser_animations__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/platform-browser/animations */ 5835);
 
 
 
@@ -48,6 +48,11 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsModalConfigService {
     constructor() {
         this.backdrop = 'static';
@@ -66,6 +71,11 @@ BsModalConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODU
             }]
     }], null, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 const _c0$2 = function (a0) { return { "fade": a0 }; };
 class BsModalBackdropComponent {
     constructor(service, elementRef) {
@@ -118,6 +128,11 @@ BsModalBackdropComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_M
             }]
     }], function () { return [{ type: BsModalBackdropService }, { type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsHelpers {
     constructor(componentFactoryResolver, appRef, injector, document) {
         this.componentFactoryResolver = componentFactoryResolver;
@@ -301,6 +316,11 @@ BsHelpers.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵ�
                 args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT]
             }] }]; }, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsModalBackdropService {
     constructor(helpers, document) {
         this.helpers = helpers;
@@ -365,6 +385,11 @@ BsModalBackdropService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
                 args: [_angular_common__WEBPACK_IMPORTED_MODULE_1__.DOCUMENT]
             }] }]; }, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsModalDirective {
     constructor(config, backdropService, elementRef) {
         this.config = config;
@@ -504,6 +529,11 @@ BsModalDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
             args: ['document:keydown.escape']
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class DismissDirective {
     constructor(bsModal) {
         this.bsModal = bsModal;
@@ -528,6 +558,11 @@ DismissDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
             args: ['click']
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsHelpersModule {
 }
 BsHelpersModule.ɵfac = function BsHelpersModule_Factory(t) { return new (t || BsHelpersModule)(); };
@@ -541,6 +576,11 @@ BsHelpersModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__
             }]
     }], null, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsModalModule {
 }
 BsModalModule.ɵfac = function BsModalModule_Factory(t) { return new (t || BsModalModule)(); };
@@ -573,6 +613,11 @@ BsModalModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["
         _angular_common__WEBPACK_IMPORTED_MODULE_1__.CommonModule], exports: [BsModalDirective,
         DismissDirective] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsDropdownBoundaryDirective {
     constructor(elementRef) {
         this.elementRef = elementRef;
@@ -587,6 +632,11 @@ BsDropdownBoundaryDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTE
             }]
     }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsDropdownDirective {
     constructor(elementRef, helpers, boundary) {
         this.elementRef = elementRef;
@@ -714,6 +764,11 @@ BsDropdownDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE
             args: ['document:keydown', ['$event']]
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsDropdownToggleDirective {
     constructor(bsDropdown) {
         this.bsDropdown = bsDropdown;
@@ -738,6 +793,11 @@ BsDropdownToggleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_
             args: ['click']
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsDropdownModule {
 }
 BsDropdownModule.ɵfac = function BsDropdownModule_Factory(t) { return new (t || BsDropdownModule)(); };
@@ -770,7 +830,7 @@ BsDropdownModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
         BsDropdownToggleDirective] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -877,6 +937,11 @@ AbstractPopupComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MOD
             type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Input
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsTooltipConfigService {
     constructor() {
         this.animation = true;
@@ -896,6 +961,11 @@ BsTooltipConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
             }]
     }], null, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 const _c0$1 = ["ngContent"];
 function BsTooltipComponent_span_6_Template(rf, ctx) { if (rf & 1) {
     _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "span");
@@ -962,7 +1032,7 @@ BsTooltipComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_
         }] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1097,6 +1167,11 @@ AbstractPopupToggleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORT
             args: ['click']
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsTooltipBoundaryDirective {
     constructor(elementRef) {
         this.elementRef = elementRef;
@@ -1112,7 +1187,7 @@ BsTooltipBoundaryDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED
     }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1169,6 +1244,11 @@ BsTooltipToggleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_M
             type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.Output
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsTooltipModule {
 }
 BsTooltipModule.ɵfac = function BsTooltipModule_Factory(t) { return new (t || BsTooltipModule)(); };
@@ -1204,7 +1284,7 @@ BsTooltipModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__
         BsTooltipToggleDirective] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1229,7 +1309,7 @@ BsPopoverConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
     }], null, null); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1324,6 +1404,11 @@ BsPopoverComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_
             args: ['contentElement']
         }] }); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class BsPopoverBoundaryDirective {
     constructor(elementRef) {
         this.elementRef = elementRef;
@@ -1339,7 +1424,7 @@ BsPopoverBoundaryDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED
     }], function () { return [{ type: _angular_core__WEBPACK_IMPORTED_MODULE_0__.ElementRef }]; }, null); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1417,7 +1502,7 @@ BsPopoverToggleDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_M
         }] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1453,7 +1538,7 @@ BsPopoverModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__
         BsPopoverToggleDirective] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1543,7 +1628,7 @@ BsCollapseDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE
         }] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1583,7 +1668,7 @@ BsCollapseGroupDirective.ɵdir = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_M
         }] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1618,7 +1703,7 @@ BsCollapseModule.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0_
         BsCollapseGroupDirective] }); })();
 
 /*
- * Bootstrap 4 plugin for AngularJS.
+ * Bootstrap 4 plugin for Angular.
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
@@ -1639,6 +1724,11 @@ BsCarouselConfigService.ɵprov = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_M
             }]
     }], null, null); })();
 
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 class AngularBootstrap4Module {
 }
 AngularBootstrap4Module.ɵfac = function AngularBootstrap4Module_Factory(t) { return new (t || AngularBootstrap4Module)(); };
@@ -1691,7 +1781,9 @@ AngularBootstrap4Module.ɵinj = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MO
         BsTooltipModule] }); })();
 
 /*
- * Public API Surface of angular-bootstrap4
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
  */
 
 /**
@@ -1767,7 +1859,7 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](0, "nav", 0);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](1, "div", 1);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](2, "a", 2);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](3, "AngularJS Bootstrap");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtext"](3, "Angular Bootstrap 4");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementEnd"]();
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵelementStart"](4, "button", 3);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵlistener"]("click", function AppComponent_Template_button_click_4_listener() { return ctx.navbar = !ctx.navbar; });
@@ -2856,7 +2948,7 @@ AppComponent.ɵcmp = /*@__PURE__*/ _angular_core__WEBPACK_IMPORTED_MODULE_0__["�
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsCollapse", ctx.tab2);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](8);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵproperty"]("bsCollapse", ctx.tab3);
-    } }, styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJhcHAuY29tcG9uZW50LmNzcyJ9 */"] });
+    } }, styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbImFwcC5jb21wb25lbnQuY3NzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUFBOzs7O0VBSUUiLCJmaWxlIjoiYXBwLmNvbXBvbmVudC5jc3MiLCJzb3VyY2VzQ29udGVudCI6WyIvKlxuICogQm9vdHN0cmFwIDQgcGx1Z2luIGZvciBBbmd1bGFyLlxuICogQ29weXJpZ2h0IChjKSAyMDE2LTIwMjEgUm9keml1IDxtYXRldXN6LnJvaGRlQGdtYWlsLmNvbT5cbiAqIExpY2Vuc2U6IE1JVFxuICovXG5cbiJdfQ== */"] });
 
 
 /***/ }),
@@ -2973,6 +3065,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "environment": () => (/* binding */ environment)
 /* harmony export */ });
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
@@ -3003,6 +3100,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/core */ 7716);
 /* harmony import */ var _app_app_module__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./app/app.module */ 7022);
 /* harmony import */ var _environments_environment__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./environments/environment */ 1591);
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
 
 
 

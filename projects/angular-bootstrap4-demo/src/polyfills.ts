@@ -1,3 +1,9 @@
+/*
+ * Bootstrap 4 plugin for Angular.
+ * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
+ * License: MIT
+ */
+
 /**
  * This file includes polyfills needed by Angular and is loaded before the app.
  * You can add your own extra polyfills to this file.

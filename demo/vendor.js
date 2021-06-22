@@ -1,6 +1,6 @@
 (self["webpackChunkangular_bootstrap4"] = self["webpackChunkangular_bootstrap4"] || []).push([["vendor"],{
 
-/***/ 238:
+/***/ 7238:
 /*!******************************************************************************!*\
   !*** ./node_modules/@angular/animations/__ivy_ngcc__/fesm2015/animations.js ***!
   \******************************************************************************/
@@ -1237,7 +1237,7 @@ const ɵPRE_STYLE = '!';
 
 /***/ }),
 
-/***/ 154:
+/***/ 3154:
 /*!***************************************************************************!*\
   !*** ./node_modules/@angular/animations/__ivy_ngcc__/fesm2015/browser.js ***!
   \***************************************************************************/
@@ -1265,7 +1265,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "ɵsupportsWebAnimations": () => (/* binding */ supportsWebAnimations),
 /* harmony export */   "ɵvalidateStyleProperty": () => (/* binding */ validateStyleProperty)
 /* harmony export */ });
-/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/animations */ 238);
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/animations */ 7238);
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 7716);
 /**
  * @license Angular v12.0.4
@@ -52697,7 +52697,7 @@ const VERSION = new _angular_core__WEBPACK_IMPORTED_MODULE_0__.Version('12.0.4')
 
 /***/ }),
 
-/***/ 835:
+/***/ 5835:
 /*!************************************************************************************!*\
   !*** ./node_modules/@angular/platform-browser/__ivy_ngcc__/fesm2015/animations.js ***!
   \************************************************************************************/
@@ -52723,8 +52723,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _angular_core__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @angular/core */ 7716);
 /* harmony import */ var _angular_platform_browser__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! @angular/platform-browser */ 9075);
-/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/animations */ 238);
-/* harmony import */ var _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/animations/browser */ 154);
+/* harmony import */ var _angular_animations__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @angular/animations */ 7238);
+/* harmony import */ var _angular_animations_browser__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! @angular/animations/browser */ 3154);
 /* harmony import */ var _angular_common__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! @angular/common */ 8583);
 /**
  * @license Angular v12.0.4
