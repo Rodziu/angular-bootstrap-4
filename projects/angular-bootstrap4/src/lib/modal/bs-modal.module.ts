@@ -21,6 +21,9 @@ import {BsHelpersModule} from '../helpers/bs-helpers.module';
         BsHelpersModule,
         CommonModule
     ],
+    entryComponents: [
+        BsModalBackdropComponent
+    ],
     exports: [
         BsModalDirective,
         DismissDirective
