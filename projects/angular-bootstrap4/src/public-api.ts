@@ -34,4 +34,5 @@ export * from './lib/toast/bs-toast.module';
 export * from './lib/toast/bs-toast-config.service';
 export * from './lib/toast/bs-toast.component';
 export * from './lib/helpers/bs-helpers.module';
+export * from './lib/helpers/bs-helpers.service';
 export * from './lib/angular-bootstrap4.module';
