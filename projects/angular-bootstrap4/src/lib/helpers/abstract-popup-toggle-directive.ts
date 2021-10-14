@@ -62,8 +62,9 @@ export abstract class AbstractPopupToggleDirective<T extends AbstractPopupCompon
     abstract readonly bsPopupToggleChange: EventEmitter<boolean>;
 
     protected popupComponent?: ComponentRef<T>;
+    protected _showTimeout?: number;
     protected abstract componentClass: Type<T>;
-    protected abstract boundary: AbstractPopupBoundary
+    protected abstract boundary: AbstractPopupBoundary;
 
     protected constructor(
         protected config: BsPopupOptions,
@@ -132,11 +133,13 @@ export abstract class AbstractPopupToggleDirective<T extends AbstractPopupCompon
             );
             this.popupComponent.instance.parentElement = this.elementRef.nativeElement;
         }
-        setTimeout(() => {
+
+        this._showTimeout = setTimeout(() => {
             if (this.popupComponent) {
                 this.popupComponent.instance.visible = true;
             }
         });
+
         if (this.animation) {
             this.popupComponent.instance.animation = this.animation;
         }
@@ -155,6 +158,12 @@ export abstract class AbstractPopupToggleDirective<T extends AbstractPopupCompon
         if (!this.popupComponent) {
             return;
         }
+
+        if (this._showTimeout) {
+            clearTimeout(this._showTimeout);
+            this._showTimeout = undefined;
+        }
+
         this.popupComponent.instance.visible = false;
     }
 }
