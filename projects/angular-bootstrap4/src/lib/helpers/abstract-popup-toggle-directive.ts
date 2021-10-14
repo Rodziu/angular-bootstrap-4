@@ -11,7 +11,7 @@ import {
     EventEmitter,
     HostListener,
     Inject,
-    Input,
+    Input, OnDestroy,
     Type
 } from '@angular/core';
 import {AbstractPopupComponent, bsPopupDelay, BsPopupOptions} from './abstract-popup-component';
@@ -23,7 +23,7 @@ export abstract class AbstractPopupBoundary {
 }
 
 @Directive()
-export abstract class AbstractPopupToggleDirective<T extends AbstractPopupComponent> {
+export abstract class AbstractPopupToggleDirective<T extends AbstractPopupComponent> implements OnDestroy {
     @Input() animation?: boolean;
     @Input() delay?: bsPopupDelay;
     @Input() html: boolean;
@@ -108,6 +108,12 @@ export abstract class AbstractPopupToggleDirective<T extends AbstractPopupCompon
             this.hide();
         } else {
             this.show();
+        }
+    }
+
+    ngOnDestroy(): void {
+        if (this.popupComponent) {
+            this.popupComponent.destroy();
         }
     }
 

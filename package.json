@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap4",
-  "version": "3.0.1",
+  "version": "3.0.2",
   "description": "Bootstrap 4 plugin for Angular.",
   "scripts": {
     "ng": "ng",
