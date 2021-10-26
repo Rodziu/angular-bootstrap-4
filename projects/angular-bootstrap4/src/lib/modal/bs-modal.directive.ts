@@ -4,16 +4,17 @@
  * License: MIT
  */
 
-import {Directive, ElementRef, HostListener, Input, OnInit, Output} from '@angular/core';
+import {Directive, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
 import {BsModalConfigService, IBsModalOptions} from './bs-modal-config.service';
 import {BsModalBackdropService} from './backdrop/bs-modal-backdrop.service';
 import {EventEmitter} from '@angular/core';
+import {DOCUMENT} from '@angular/common';
 
 @Directive({
     selector: '[bsModal]',
     exportAs: 'bsModal'
 })
-export class BsModalDirective implements OnInit {
+export class BsModalDirective implements OnInit, OnDestroy {
     @Input() get bsModal(): boolean {
         return this._bsModal;
     }
@@ -38,10 +39,17 @@ export class BsModalDirective implements OnInit {
     @Input() keyboard?: IBsModalOptions['keyboard'];
     @Input() onBeforeChange?: IBsModalOptions['onBeforeChange'];
 
+    private _keydownListener = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') {
+            this.onKeydown();
+        }
+    };
+
     constructor(
         private config: BsModalConfigService,
         private backdropService: BsModalBackdropService,
-        private elementRef: ElementRef<HTMLElement>
+        private elementRef: ElementRef<HTMLElement>,
+        @Inject(DOCUMENT) private document: Document
     ) {
     }
 
@@ -54,18 +62,24 @@ export class BsModalDirective implements OnInit {
         }
     }
 
-    @HostListener('document:keydown.escape') keydown(): void {
-        if (this.keyboard) {
-            this.hide();
-        }
-    }
-
     ngOnInit(): void {
         if (typeof this.backdrop === 'undefined') {
             this.backdrop = this.config.backdrop;
         }
         if (typeof this.keyboard === 'undefined') {
             this.keyboard = this.config.keyboard;
+        }
+
+        this.document.addEventListener('keydown', this._keydownListener);
+    }
+
+    ngOnDestroy(): void {
+        this.document.removeEventListener('keydown', this._keydownListener);
+    }
+
+    onKeydown(): void {
+        if (this.keyboard) {
+            this.hide();
         }
     }
 

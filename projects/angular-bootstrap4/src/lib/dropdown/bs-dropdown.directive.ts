@@ -4,14 +4,25 @@
  * License: MIT
  */
 
-import {Directive, ElementRef, EventEmitter, Host, HostListener, Input, OnInit, Optional, Output} from '@angular/core';
+import {
+    Directive,
+    ElementRef,
+    EventEmitter,
+    Host,
+    Inject,
+    Input, OnDestroy,
+    OnInit,
+    Optional,
+    Output
+} from '@angular/core';
 import {BsDropdownBoundaryDirective} from './bs-dropdown-boundary.directive';
 import {BsHelpers} from '../helpers/bs-helpers.service';
+import {DOCUMENT} from '@angular/common';
 
 @Directive({
     selector: '[bsDropdown]'
 })
-export class BsDropdownDirective implements OnInit {
+export class BsDropdownDirective implements OnInit, OnDestroy {
     @Input() get bsDropdown(): boolean {
         return this._bsDropdown;
     }
@@ -31,25 +42,46 @@ export class BsDropdownDirective implements OnInit {
 
     @Output() readonly bsDropdownChange = new EventEmitter<boolean>();
 
+    private _listeners: { type: keyof DocumentEventMap, listener: EventListenerOrEventListenerObject }[] = [];
+
     constructor(
         private elementRef: ElementRef<HTMLElement>,
         private helpers: BsHelpers,
-        @Optional() @Host() private boundary: BsDropdownBoundaryDirective
+        @Optional() @Host() private boundary: BsDropdownBoundaryDirective,
+        @Inject(DOCUMENT) private document: Document
     ) {
     }
 
     ngOnInit(): void {
         this.elementRef.nativeElement.classList.add('dropdown');
+
+        this._addListener('click', (e) => this.onClick(e.target as HTMLElement));
+        this._addListener('keydown', (e) => this.onKeydown(e as KeyboardEvent));
     }
 
-    @HostListener('document:click', ['$event.target']) click(target: HTMLElement): void {
+    private _addListener(type: keyof DocumentEventMap, listener: EventListenerOrEventListenerObject): void {
+        this._listeners.push({
+            type,
+            listener
+        });
+
+        this.document.addEventListener(type, listener);
+    }
+
+    ngOnDestroy(): void {
+        this._listeners.forEach((item) => {
+            this.document.removeEventListener(item.type, item.listener);
+        })
+    }
+
+    onClick(target: HTMLElement): void {
         if (this._bsDropdown && !this.elementRef.nativeElement.contains(target)) {
             this._bsDropdown = false;
             this.bsDropdownChange.emit(false);
         }
     }
 
-    @HostListener('document:keydown', ['$event']) keydown(event: KeyboardEvent): void {
+    onKeydown(event: KeyboardEvent): void {
         if (!this._bsDropdown) {
             return;
         }
