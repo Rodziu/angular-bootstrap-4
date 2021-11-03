@@ -115,6 +115,7 @@ export abstract class AbstractPopupToggleDirective<T extends AbstractPopupCompon
     ngOnDestroy(): void {
         if (this.popupComponent) {
             this.popupComponent.destroy();
+            this.popupComponent = undefined;
         }
     }
 

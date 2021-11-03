@@ -79,6 +79,11 @@ export class BsHelpers {
             arrowTop = '50%',
             realPlacement: placement = 'left',
             offset = this.offset(element);
+
+        if (isNaN(offset.width)) { // element is not present in DOM
+            return;
+        }
+
         const offsetTo = this.offset(positionTo),
             placements: placement[] = ['right', 'top', 'bottom'],
             auto = !!~splitPlacement.indexOf('auto'),
