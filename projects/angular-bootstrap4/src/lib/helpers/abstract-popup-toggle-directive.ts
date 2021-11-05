@@ -103,6 +103,11 @@ export abstract class AbstractPopupToggleDirective<T extends AbstractPopupCompon
     }
 
     @HostListener('click') click(): void {
+        const triggers = this.getTriggers();
+        if (!triggers.includes('click')) {
+            return;
+        }
+
         const visible = !!this.popupComponent?.instance.visible;
         this.bsPopupToggleChange.emit(!visible);
         if (visible) {
