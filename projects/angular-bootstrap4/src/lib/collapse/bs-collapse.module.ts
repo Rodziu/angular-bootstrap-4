@@ -5,8 +5,6 @@
  */
 import {NgModule} from '@angular/core';
 import {BsCollapseDirective} from './bs-collapse.directive';
-import {BrowserModule} from '@angular/platform-browser';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {BsCollapseGroupDirective} from './bs-collapse-group.directive';
 
 @NgModule({
@@ -15,8 +13,6 @@ import {BsCollapseGroupDirective} from './bs-collapse-group.directive';
         BsCollapseGroupDirective
     ],
     imports: [
-        BrowserAnimationsModule,
-        BrowserModule
     ],
     exports: [
         BsCollapseDirective,

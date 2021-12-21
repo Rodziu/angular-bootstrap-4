@@ -12,6 +12,7 @@ import {AngularBootstrap4Module} from 'angular-bootstrap4';
 import {SectionDirective} from './section.directive';
 import {FormsModule} from '@angular/forms';
 import {TitleDirective} from './title.directive';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 
 @NgModule({
     declarations: [
@@ -21,6 +22,7 @@ import {TitleDirective} from './title.directive';
     ],
     imports: [
         AngularBootstrap4Module,
+        BrowserAnimationsModule,
         BrowserModule,
         FormsModule
     ],

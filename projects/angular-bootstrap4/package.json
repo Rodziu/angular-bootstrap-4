@@ -1,6 +1,6 @@
 {
   "name": "angular-bootstrap4",
-  "version": "3.0.6",
+  "version": "3.0.7",
   "description": "Bootstrap 4 plugin for Angular.",
   "peerDependencies": {
     "@angular/common": "^12.0.4",
