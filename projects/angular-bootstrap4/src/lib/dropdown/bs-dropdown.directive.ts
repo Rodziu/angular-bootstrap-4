@@ -54,9 +54,44 @@ export class BsDropdownDirective implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.elementRef.nativeElement.classList.add('dropdown');
+    }
 
-        this._addListener('click', (e) => this.onClick(e.target as HTMLElement));
-        this._addListener('keydown', (e) => this.onKeydown(e as KeyboardEvent));
+    show(): void {
+        this._addListener('click', (e) => this._onClick(e.target as HTMLElement));
+        this._addListener('keydown', (e) => this._onKeydown(e as KeyboardEvent));
+        this.elementRef.nativeElement.classList.add('show');
+        this.elementRef.nativeElement.querySelectorAll('.dropdown-menu')
+            .forEach((element) => {
+                element.classList.add('show');
+            });
+        this.reposition();
+    }
+
+    private reposition(): void {
+        let boundaryElement: HTMLElement;
+
+        if (this.boundary) {
+            boundaryElement = this.boundary.elementRef.nativeElement;
+        } else if (this.boundaryElement) {
+            boundaryElement = this.boundaryElement.nativeElement;
+        } else {
+            return;
+        }
+
+        const dropdownMenu = this.elementRef.nativeElement.querySelector('.dropdown-menu') as HTMLElement;
+
+        if (!dropdownMenu) {
+            return;
+        }
+
+        const boundaryOffset = this.helpers.offset(boundaryElement),
+            menuOffset = this.helpers.offset(dropdownMenu);
+
+        if (menuOffset.height + menuOffset.top > boundaryOffset.height + boundaryOffset.top) {
+            this.elementRef.nativeElement.classList.add('dropup');
+        } else {
+            this.elementRef.nativeElement.classList.remove('dropup');
+        }
     }
 
     private _addListener(type: keyof DocumentEventMap, listener: EventListenerOrEventListenerObject): void {
@@ -68,20 +103,14 @@ export class BsDropdownDirective implements OnInit, OnDestroy {
         this.document.addEventListener(type, listener);
     }
 
-    ngOnDestroy(): void {
-        this._listeners.forEach((item) => {
-            this.document.removeEventListener(item.type, item.listener);
-        })
-    }
-
-    onClick(target: HTMLElement): void {
+    private _onClick(target: HTMLElement): void {
         if (this._bsDropdown && !this.elementRef.nativeElement.contains(target)) {
             this._bsDropdown = false;
             this.bsDropdownChange.emit(false);
         }
     }
 
-    onKeydown(event: KeyboardEvent): void {
+    private _onKeydown(event: KeyboardEvent): void {
         if (!this._bsDropdown) {
             return;
         }
@@ -114,16 +143,8 @@ export class BsDropdownDirective implements OnInit, OnDestroy {
         }
     }
 
-    show(): void {
-        this.elementRef.nativeElement.classList.add('show');
-        this.elementRef.nativeElement.querySelectorAll('.dropdown-menu')
-            .forEach((element) => {
-                element.classList.add('show');
-            });
-        this.reposition();
-    }
-
     hide(): void {
+        this._removeListeners();
         if (this.boundary || this.boundaryElement) {
             this.elementRef.nativeElement.classList.remove('dropup');
         }
@@ -134,30 +155,14 @@ export class BsDropdownDirective implements OnInit, OnDestroy {
             });
     }
 
-    private reposition(): void {
-        let boundaryElement: HTMLElement;
+    private _removeListeners(): void {
+        this._listeners.forEach((item) => {
+            this.document.removeEventListener(item.type, item.listener);
+        });
+        this._listeners.length = 0;
+    }
 
-        if (this.boundary) {
-            boundaryElement = this.boundary.elementRef.nativeElement;
-        } else if (this.boundaryElement) {
-            boundaryElement = this.boundaryElement.nativeElement;
-        } else {
-            return;
-        }
-
-        const dropdownMenu = this.elementRef.nativeElement.querySelector('.dropdown-menu') as HTMLElement;
-
-        if (!dropdownMenu) {
-            return;
-        }
-
-        const boundaryOffset = this.helpers.offset(boundaryElement),
-            menuOffset = this.helpers.offset(dropdownMenu);
-
-        if (menuOffset.height + menuOffset.top > boundaryOffset.height + boundaryOffset.top) {
-            this.elementRef.nativeElement.classList.add('dropup');
-        } else {
-            this.elementRef.nativeElement.classList.remove('dropup');
-        }
+    ngOnDestroy(): void {
+        this._removeListeners();
     }
 }

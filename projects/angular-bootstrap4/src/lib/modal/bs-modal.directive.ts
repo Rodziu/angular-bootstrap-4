@@ -69,8 +69,6 @@ export class BsModalDirective implements OnInit, OnDestroy {
         if (typeof this.keyboard === 'undefined') {
             this.keyboard = this.config.keyboard;
         }
-
-        this.document.addEventListener('keydown', this._keydownListener);
     }
 
     ngOnDestroy(): void {
@@ -118,6 +116,8 @@ export class BsModalDirective implements OnInit, OnDestroy {
     }
 
     private doShow(): void {
+        this.document.addEventListener('keydown', this._keydownListener);
+
         if (!this.elementRef.nativeElement.classList.contains('show')) {
             this.elementRef.nativeElement.style.display = 'block';
             this.elementRef.nativeElement.offsetWidth; // force reflow
@@ -130,6 +130,8 @@ export class BsModalDirective implements OnInit, OnDestroy {
     }
 
     private doHide(): void {
+        this.document.removeEventListener('keydown', this._keydownListener);
+
         if (this.elementRef.nativeElement.classList.contains('show')) {
             this.elementRef.nativeElement.classList.remove('show');
             let transitionEnded = false;
