@@ -3,10 +3,11 @@
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
-import {AfterViewInit, ElementRef, EventEmitter, ViewChild} from '@angular/core';
+import {AfterViewInit, ElementRef, EventEmitter, NgZone, ViewChild} from '@angular/core';
 import {Component, Input, Output} from '@angular/core';
 import {BsToastConfigService} from './bs-toast-config.service';
 import {AbstractFadeOutComponent} from '../helpers/abstract-fade-out-component';
+import {BsHelpers} from '../helpers/bs-helpers.service';
 
 @Component({
     selector: 'bs-toast',
@@ -45,9 +46,10 @@ export class BsToastComponent extends AbstractFadeOutComponent implements AfterV
 
     constructor(
         protected elementRef: ElementRef<HTMLElement>,
+        protected bsHelpers: BsHelpers,
         private config: BsToastConfigService
     ) {
-        super(elementRef);
+        super(elementRef, bsHelpers);
         this.animation = this.config.animation;
     }
 

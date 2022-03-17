@@ -9,6 +9,7 @@ import {BsModalConfigService, IBsModalOptions} from './bs-modal-config.service';
 import {BsModalBackdropService} from './backdrop/bs-modal-backdrop.service';
 import {EventEmitter} from '@angular/core';
 import {DOCUMENT} from '@angular/common';
+import {BsHelpers} from '../helpers/bs-helpers.service';
 
 @Directive({
     selector: '[bsModal]',
@@ -48,6 +49,7 @@ export class BsModalDirective implements OnInit, OnDestroy {
     constructor(
         private config: BsModalConfigService,
         private backdropService: BsModalBackdropService,
+        private bsHelpers: BsHelpers,
         private elementRef: ElementRef<HTMLElement>,
         @Inject(DOCUMENT) private document: Document
     ) {
@@ -120,7 +122,7 @@ export class BsModalDirective implements OnInit, OnDestroy {
 
         if (!this.elementRef.nativeElement.classList.contains('show')) {
             this.elementRef.nativeElement.style.display = 'block';
-            this.elementRef.nativeElement.offsetWidth; // force reflow
+            this.bsHelpers.reflow(this.elementRef.nativeElement);
             this.backdropService
                 .show(!!this.backdrop, this.elementRef.nativeElement.classList.contains('fade'))
                 .then(() => {
@@ -134,21 +136,14 @@ export class BsModalDirective implements OnInit, OnDestroy {
 
         if (this.elementRef.nativeElement.classList.contains('show')) {
             this.elementRef.nativeElement.classList.remove('show');
-            let transitionEnded = false;
+
             const callback = () => {
-                    this.backdropService.hide();
-                    this.elementRef.nativeElement.style.display = '';
-                },
-                transition = () => {
-                    if (!transitionEnded) {
-                        this.elementRef.nativeElement.removeEventListener('transitionend', transition);
-                        callback();
-                        transitionEnded = true;
-                    }
-                };
+                this.backdropService.hide();
+                this.elementRef.nativeElement.style.display = '';
+            };
+
             if (this.elementRef.nativeElement.classList.contains('fade')) {
-                this.elementRef.nativeElement.addEventListener('transitionend', transition);
-                setTimeout(transition, 300);
+                this.bsHelpers.runTransition(this.elementRef.nativeElement, callback);
             } else {
                 callback();
             }

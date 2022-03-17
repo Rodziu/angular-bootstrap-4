@@ -4,7 +4,7 @@
  * License: MIT
  */
 
-import {AfterContentChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
 import {BsTooltipConfigService} from './bs-tooltip-config.service';
 import {BsHelpers} from '../helpers/bs-helpers.service';
 import {AbstractPopupComponent} from '../helpers/abstract-popup-component';

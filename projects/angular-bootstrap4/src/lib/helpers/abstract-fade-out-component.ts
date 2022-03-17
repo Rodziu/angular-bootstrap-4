@@ -4,6 +4,7 @@
  * License: MIT
  */
 import {Component, ElementRef} from '@angular/core';
+import {BsHelpers} from './bs-helpers.service';
 
 // eslint-disable-next-line @angular-eslint/use-component-selector
 @Component({
@@ -17,6 +18,7 @@ export abstract class AbstractFadeOutComponent {
 
     protected constructor(
         protected elementRef: ElementRef<HTMLElement>,
+        protected bsHelpers: BsHelpers
     ) {
     }
 
@@ -26,11 +28,9 @@ export abstract class AbstractFadeOutComponent {
             const popup = this.elementRef.nativeElement.children[0] as HTMLElement;
 
             this._visible = true;
-            const transition = () => {
+            this.bsHelpers.runTransition(popup, () => {
                 this._visible = false;
-                popup.removeEventListener('transitionend', transition);
-            };
-            popup.addEventListener('transitionend', transition);
+            });
         }
     }
 }

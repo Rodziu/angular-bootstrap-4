@@ -6,6 +6,7 @@
 import {AfterContentInit, ContentChildren, Directive, HostListener, Input, QueryList} from '@angular/core';
 import {BsCarouselConfigService, IBsCarouselOptions} from './bs-carousel-config.service';
 import {BsCarouselItemDirective} from './bs-carousel-item.directive';
+import {BsHelpers} from '../helpers/bs-helpers.service';
 
 type direction = 'left' | 'right';
 
@@ -24,7 +25,8 @@ export class BsCarouselDirective implements AfterContentInit {
     private sliding = false;
 
     constructor(
-        private config: BsCarouselConfigService
+        private config: BsCarouselConfigService,
+        private bsHelpers: BsHelpers
     ) {
         this.wrap = this.config.wrap;
         this.keyboard = this.config.keyboard;
@@ -127,18 +129,16 @@ export class BsCarouselDirective implements AfterContentInit {
                 return;
             }
 
-            const transition = () => {
-                active.removeEventListener('transitionend', transition);
+            next.classList.add(direction === 'left' ? 'carousel-item-next' : 'carousel-item-prev');
+            this.bsHelpers.reflow(next);
+            active.classList.add(`carousel-item-${direction}`);
+            next.classList.add(`carousel-item-${direction}`);
+            this.bsHelpers.runTransition(active, () => {
                 next.classList.remove('carousel-item-next', 'carousel-item-prev', `carousel-item-${direction}`);
                 next.classList.add('active');
                 active.classList.remove('active', `carousel-item-${direction}`);
                 this.sliding = false;
-            };
-            next.classList.add(direction === 'left' ? 'carousel-item-next' : 'carousel-item-prev');
-            next.offsetWidth; // force reflow
-            active.classList.add(`carousel-item-${direction}`);
-            next.classList.add(`carousel-item-${direction}`);
-            active.addEventListener('transitionend', transition);
+            })
             this.currentSlide = nextSlide;
         }
     }

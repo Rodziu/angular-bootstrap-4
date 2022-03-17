@@ -7,7 +7,6 @@
 import {NgModule} from '@angular/core';
 import {BsModalModule} from './modal/bs-modal.module';
 import {BsDropdownModule} from './dropdown/bs-dropdown.module';
-import {BsHelpersModule} from './helpers/bs-helpers.module';
 import {BsTooltipModule} from './tooltip/bs-tooltip.module';
 import {BsPopoverModule} from './popover/bs-popover.module';
 import {BsCollapseModule} from './collapse/bs-collapse.module';
@@ -20,7 +19,6 @@ import {BsToastModule} from './toast/bs-toast.module';
         BsCarouselModule,
         BsCollapseModule,
         BsDropdownModule,
-        BsHelpersModule,
         BsModalModule,
         BsPopoverModule,
         BsToastModule,
@@ -30,7 +28,6 @@ import {BsToastModule} from './toast/bs-toast.module';
         BsCarouselModule,
         BsCollapseModule,
         BsDropdownModule,
-        BsHelpersModule,
         BsModalModule,
         BsPopoverModule,
         BsToastModule,

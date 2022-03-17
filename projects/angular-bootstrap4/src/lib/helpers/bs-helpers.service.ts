@@ -10,7 +10,7 @@ import {
     ComponentRef,
     EmbeddedViewRef, Inject,
     Injectable,
-    Injector,
+    Injector, NgZone,
     Type
 } from '@angular/core';
 import {DOCUMENT} from '@angular/common';
@@ -32,6 +32,7 @@ export class BsHelpers {
         private componentFactoryResolver: ComponentFactoryResolver,
         private appRef: ApplicationRef,
         private injector: Injector,
+        private ngZone: NgZone,
         @Inject(DOCUMENT) private document: Document
     ) {
     }
@@ -209,6 +210,30 @@ export class BsHelpers {
                     break;
             }
         }
+    }
+
+    reflow(element: HTMLElement): void {
+        element.offsetWidth;
+    }
+
+    runTransition(element: HTMLElement, endFn: () => void): void {
+        const {
+            transitionDuration,
+            transitionDelay
+        } = window.getComputedStyle(element);
+
+        let transitionFinished = false;
+        const transition = () => {
+            if (!transitionFinished) {
+                transitionFinished = true;
+                element.removeEventListener('transitionend', transition);
+                endFn();
+            }
+        };
+        this.ngZone.runOutsideAngular(() => {
+            element.addEventListener('transitionend', transition);
+            setTimeout(transition, (parseFloat(transitionDuration) + parseFloat(transitionDelay)) * 1000);
+        });
     }
 
     createComponent<T>(

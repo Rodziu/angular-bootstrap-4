@@ -52,7 +52,7 @@ export abstract class AbstractPopupComponent extends AbstractFadeOutComponent im
         protected config: BsPopupOptions,
         protected helpers: BsHelpers
     ) {
-        super(elementRef);
+        super(elementRef, helpers);
         this.animation = this.config.animation;
         this.delay = this.config.delay;
         this.placement = this.config.placement;

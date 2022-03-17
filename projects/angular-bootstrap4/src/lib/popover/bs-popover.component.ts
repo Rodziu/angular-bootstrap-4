@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
-import {AfterContentChecked, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
 import {BsHelpers} from '../helpers/bs-helpers.service';
 import {BsPopoverConfigService} from './bs-popover-config.service';
 import {AbstractPopupComponent} from '../helpers/abstract-popup-component';

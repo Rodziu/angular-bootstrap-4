@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2021 Rodziu <mateusz.rohde@gmail.com>
  * License: MIT
  */
-import {ElementRef, EventEmitter, Host, OnInit, Optional} from '@angular/core';
+import {ElementRef, EventEmitter, OnInit} from '@angular/core';
 import {Directive, Input, Output} from '@angular/core';
-import {animate, AnimationBuilder, style} from '@angular/animations';
+import {BsHelpers} from '../helpers/bs-helpers.service';
 
 @Directive({
     selector: '[bsCollapse]',
@@ -32,69 +32,65 @@ export class BsCollapseDirective implements OnInit {
 
     @Output() readonly bsCollapseChange = new EventEmitter<boolean>();
     @Output() readonly opened = new EventEmitter<void>();
+
+    private classList: DOMTokenList;
     private collapse = false;
 
     constructor(
         private elementRef: ElementRef<HTMLElement>,
-        private builder: AnimationBuilder
+        private bsHelpers: BsHelpers
     ) {
+        this.classList = elementRef.nativeElement.classList;
     }
 
 
     ngOnInit(): void {
         if (this.collapse) {
-            this.elementRef.nativeElement.classList.remove('show', 'collapsing');
-            this.elementRef.nativeElement.classList.add('collapse');
-            this.elementRef.nativeElement.style.height = '';
+            this.classList.remove('show', 'collapsing');
+            this.classList.add('collapse');
+            this._setHeight();
         } else {
-            this.elementRef.nativeElement.classList.remove('collapsing');
-            this.elementRef.nativeElement.classList.add('collapse', 'show');
+            this.classList.remove('collapsing');
+            this.classList.add('collapse', 'show');
         }
     }
 
+    private _setHeight(height?: number): void {
+        this.elementRef.nativeElement.style.height = typeof height === 'undefined' ? '' : height + 'px';
+    }
+
     show(): void {
-        if (!this.elementRef.nativeElement.classList.contains('show')) {
+        if (!this.classList.contains('show')) {
             this.animate(false);
         }
     }
 
     hide(): void {
-        if (this.elementRef.nativeElement.classList.contains('show')) {
+        if (this.classList.contains('show')) {
             this.animate(true);
         }
     }
 
     private animate(collapse: boolean): void {
         if (!collapse) { // add show class to properly calculate element expand height
-            this.elementRef.nativeElement.classList.add('show');
+            this.classList.add('show');
         }
-        this.elementRef.nativeElement.classList.remove('collapse');
+
+        const expandHeight = this.elementRef.nativeElement.scrollHeight;
+        this._setHeight(collapse ? expandHeight : 0);
+        this.classList.remove('collapse', 'show');
+        this.bsHelpers.reflow(this.elementRef.nativeElement);
+        // start animation
         this.elementRef.nativeElement.classList.add('collapsing');
+        this._setHeight(collapse ? 0 : expandHeight);
 
-        const {
-            transitionDuration,
-            transitionDelay,
-            transitionTimingFunction
-        } = window.getComputedStyle(this.elementRef.nativeElement);
-        const expandHeight = this.elementRef.nativeElement.scrollHeight + 'px';
-
-        const player = this.builder.build([
-            style({height: collapse ? expandHeight : 0}),
-            animate(
-                `${transitionDuration} ${transitionDelay} ${transitionTimingFunction}`,
-                style({height: collapse ? 0 : expandHeight})
-            )
-        ]).create(this.elementRef.nativeElement);
-
-        player.onDone(() => {
-            if (collapse) {
-                this.elementRef.nativeElement.classList.remove('show', 'collapsing');
-            } else {
-                this.elementRef.nativeElement.classList.remove('collapsing');
-                this.elementRef.nativeElement.style.height = expandHeight;
+        this.bsHelpers.runTransition(this.elementRef.nativeElement, () => {
+            this.classList.remove('collapsing');
+            this.classList.add('collapse');
+            if (!collapse) {
+                this.classList.add('show');
             }
-            this.elementRef.nativeElement.classList.add('collapse');
+            this._setHeight();
         });
-        player.play();
     }
 }

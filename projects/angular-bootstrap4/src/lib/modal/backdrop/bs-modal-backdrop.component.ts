@@ -6,6 +6,7 @@
 
 import {Component, ElementRef} from '@angular/core';
 import {BsModalBackdropService} from './bs-modal-backdrop.service';
+import {BsHelpers} from '../../helpers/bs-helpers.service';
 
 @Component({
     template: '<div class="modal-backdrop" [ngClass]="{\'fade\': service.isAnimated}"></div>',
@@ -14,6 +15,7 @@ import {BsModalBackdropService} from './bs-modal-backdrop.service';
 export class BsModalBackdropComponent {
     constructor(
         public service: BsModalBackdropService,
+        private bsHelpers: BsHelpers,
         public elementRef: ElementRef<HTMLElement>
     ) {
     }
@@ -24,7 +26,7 @@ export class BsModalBackdropComponent {
 
     show(): void {
         const backdropElement = this.getBackdropElement();
-        backdropElement.offsetWidth; // force reflow
+        this.bsHelpers.reflow(backdropElement);
         backdropElement.classList.add('show');
         backdropElement.style.display = '';
     }
@@ -34,17 +36,10 @@ export class BsModalBackdropComponent {
             const backdropElement = this.getBackdropElement();
             backdropElement.classList.remove('show');
             if (this.service.isAnimated) {
-                let transitionFinished = false;
-                const transition = function() {
-                    if (!transitionFinished) {
-                        resolve();
-                        transitionFinished = true;
-                        backdropElement.removeEventListener('transitionend', transition);
-                        backdropElement.style.display = 'none';
-                    }
-                };
-                backdropElement.addEventListener('transitionend', transition);
-                setTimeout(transition, 150);
+                this.bsHelpers.runTransition(backdropElement, () => {
+                    backdropElement.style.display = 'none';
+                    resolve();
+                });
             } else {
                 resolve();
             }
