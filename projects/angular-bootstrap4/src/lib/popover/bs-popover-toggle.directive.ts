@@ -59,13 +59,14 @@ export class BsPopoverToggleDirective extends AbstractPopupToggleDirective<BsPop
     protected getPopupProjectableNodes(): unknown[][] {
         const projectableNodes = [];
         if (this.html) {
-            const div = this.document.createElement('div');
+            let div = this.document.createElement('div');
             div.innerHTML = this.title;
             projectableNodes.push(
                 div.childNodes as unknown as unknown[]
                 // NodeListOf<ChildNode> is accepted by projectableNodes, but TS doesn't know that
             );
 
+            div = this.document.createElement('div');
             div.innerHTML = this.content;
             projectableNodes.push(
                 div.childNodes as unknown as unknown[]
