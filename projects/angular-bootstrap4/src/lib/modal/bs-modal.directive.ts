@@ -4,7 +4,17 @@
  * License: MIT
  */
 
-import {Directive, ElementRef, HostListener, Inject, Input, OnDestroy, OnInit, Output} from '@angular/core';
+import {
+    Directive,
+    ElementRef,
+    HostListener,
+    Inject,
+    Input,
+    OnChanges,
+    OnDestroy,
+    Output,
+    SimpleChanges
+} from '@angular/core';
 import {BsModalConfigService, IBsModalOptions} from './bs-modal-config.service';
 import {BsModalBackdropService} from './backdrop/bs-modal-backdrop.service';
 import {EventEmitter} from '@angular/core';
@@ -15,31 +25,15 @@ import {BsHelpers} from '../helpers/bs-helpers.service';
     selector: '[bsModal]',
     exportAs: 'bsModal'
 })
-export class BsModalDirective implements OnInit, OnDestroy {
-    @Input() get bsModal(): boolean {
-        return this._bsModal;
-    }
-
-    set bsModal(bsModal: boolean) {
-        if (bsModal === this._bsModal) {
-            return;
-        }
-
-        const result = bsModal ? this.show() : this.hide();
-        if (!result) { // not shown, prevented by shouldChange
-            setTimeout(() => {
-                this.bsModalChange.emit(!bsModal);
-            })
-            this._bsModal = !bsModal;
-        }
-    }
-
-    private _bsModal = false;
-    @Output() readonly bsModalChange = new EventEmitter<boolean>();
+export class BsModalDirective implements OnChanges, OnDestroy {
+    @Input() bsModal = false;
     @Input() backdrop?: IBsModalOptions['backdrop'];
     @Input() keyboard?: IBsModalOptions['keyboard'];
     @Input() onBeforeChange?: IBsModalOptions['onBeforeChange'];
 
+    @Output() readonly bsModalChange = new EventEmitter<boolean>();
+
+    private _bsModal = false;
     private _keydownListener = (e: KeyboardEvent) => {
         if (e.key === 'Escape') {
             this.onKeydown();
@@ -53,6 +47,8 @@ export class BsModalDirective implements OnInit, OnDestroy {
         private elementRef: ElementRef<HTMLElement>,
         @Inject(DOCUMENT) private document: Document
     ) {
+        this.backdrop = this.config.backdrop;
+        this.keyboard = this.config.keyboard;
     }
 
     @HostListener('click', ['$event.target']) click(target: HTMLElement): void {
@@ -64,17 +60,16 @@ export class BsModalDirective implements OnInit, OnDestroy {
         }
     }
 
-    ngOnInit(): void {
-        if (typeof this.backdrop === 'undefined') {
-            this.backdrop = this.config.backdrop;
+    ngOnChanges(changes: SimpleChanges): void {
+        if ('bsModal' in changes) {
+            const result = changes.bsModal.currentValue ? this.show() : this.hide();
+            if (!result) { // not shown, prevented by shouldChange
+                setTimeout(() => {
+                    this.bsModalChange.emit(!changes.bsModal.currentValue);
+                })
+                this._bsModal = !changes.bsModal.currentValue;
+            }
         }
-        if (typeof this.keyboard === 'undefined') {
-            this.keyboard = this.config.keyboard;
-        }
-    }
-
-    ngOnDestroy(): void {
-        this.document.removeEventListener('keydown', this._keydownListener);
     }
 
     onKeydown(): void {
@@ -148,5 +143,9 @@ export class BsModalDirective implements OnInit, OnDestroy {
                 callback();
             }
         }
+    }
+
+    ngOnDestroy(): void {
+        this.document.removeEventListener('keydown', this._keydownListener);
     }
 }
