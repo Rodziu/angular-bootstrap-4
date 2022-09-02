@@ -26,7 +26,19 @@ import {BsHelpers} from '../helpers/bs-helpers.service';
     exportAs: 'bsModal'
 })
 export class BsModalDirective implements OnChanges, OnDestroy {
-    @Input() bsModal = false;
+    @Input() get bsModal(): boolean {
+        return this._bsModal;
+    }
+
+    /**
+     * allow setting new value, but ignore it as it's picked up in ngOnChanges
+     * _bsModal value is updated after shouldChange validation
+     */
+    set bsModal(bsModal: boolean) {
+        // noinspection BadExpressionStatementJS
+        bsModal;
+    }
+
     @Input() backdrop?: IBsModalOptions['backdrop'];
     @Input() keyboard?: IBsModalOptions['keyboard'];
     @Input() onBeforeChange?: IBsModalOptions['onBeforeChange'];
