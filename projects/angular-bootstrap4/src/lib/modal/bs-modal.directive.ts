@@ -117,9 +117,9 @@ export class BsModalDirective implements OnChanges, OnDestroy {
     }
 
     private shouldChange(): boolean {
-        let ret = typeof this.onBeforeChange !== 'undefined' ? this.onBeforeChange(this) : true;
-        if (ret) {
-            ret = this.config.onBeforeChange(this);
+        let ret = this.config.onBeforeChange(this);
+        if (ret && typeof this.onBeforeChange !== 'undefined') {
+            ret = this.onBeforeChange(this);
         }
         return ret;
     }
