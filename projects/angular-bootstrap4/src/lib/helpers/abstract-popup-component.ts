@@ -5,9 +5,10 @@
  */
 /* eslint-disable @angular-eslint/contextual-decorator */
 
-import {Component, ElementRef, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Inject, Input, OnDestroy, OnInit} from '@angular/core';
 import {BsHelpers, placement} from './bs-helpers.service';
 import {AbstractFadeOutComponent} from './abstract-fade-out-component';
+import {DOCUMENT} from '@angular/common';
 
 export type bsPopupDelay = number | { show: number, hide: number };
 
@@ -24,7 +25,7 @@ export abstract class BsPopupOptions {
 @Component({
     template: ''
 })
-export abstract class AbstractPopupComponent extends AbstractFadeOutComponent implements OnInit {
+export abstract class AbstractPopupComponent extends AbstractFadeOutComponent implements OnInit, OnDestroy {
     @Input() get visible(): boolean {
         return this._visible;
     }
@@ -46,11 +47,23 @@ export abstract class AbstractPopupComponent extends AbstractFadeOutComponent im
     protected _visible = true;
     protected timeout: number | null = null;
     protected abstract cssPrefix: string;
+    protected scrollListener = () => {
+        if (!this.fadeIn) {
+            return;
+        }
+
+        this.show();
+    }
+
+    private readonly resizeObserver = new ResizeObserver(() => {
+        this.scrollListener();
+    });
 
     protected constructor(
-        protected elementRef: ElementRef<HTMLElement>,
-        protected config: BsPopupOptions,
-        protected helpers: BsHelpers
+        protected readonly elementRef: ElementRef<HTMLElement>,
+        protected readonly config: BsPopupOptions,
+        protected readonly helpers: BsHelpers,
+        @Inject(DOCUMENT) protected readonly document: Document
     ) {
         super(elementRef, helpers);
         this.animation = this.config.animation;
@@ -61,6 +74,9 @@ export abstract class AbstractPopupComponent extends AbstractFadeOutComponent im
 
     // eslint-disable-next-line @angular-eslint/contextual-lifecycle
     ngOnInit(): void {
+        this.document.addEventListener('scroll', this.scrollListener, true);
+        this.resizeObserver.observe(this.elementRef.nativeElement.children[0]);
+
         if (this.visible) {
             this.toggle();
         }
@@ -99,5 +115,10 @@ export abstract class AbstractPopupComponent extends AbstractFadeOutComponent im
             return inDelay[this.visible ? 'show' : 'hide'] || this.getDelay(this.config.delay);
         }
         return inDelay;
+    }
+
+    ngOnDestroy(): void {
+        this.document.removeEventListener('scroll', this.scrollListener, true);
+        this.resizeObserver.disconnect();
     }
 }

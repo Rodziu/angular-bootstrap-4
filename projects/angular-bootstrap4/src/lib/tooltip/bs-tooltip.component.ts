@@ -4,16 +4,17 @@
  * License: MIT
  */
 
-import {AfterContentChecked, Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
+import {AfterContentChecked, Component, ElementRef, Inject, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {BsTooltipConfigService} from './bs-tooltip-config.service';
 import {BsHelpers} from '../helpers/bs-helpers.service';
 import {AbstractPopupComponent} from '../helpers/abstract-popup-component';
+import {DOCUMENT} from '@angular/common';
 
 @Component({
     selector: 'bs-tooltip',
     templateUrl: './bs-tooltip.component.html'
 })
-export class BsTooltipComponent extends AbstractPopupComponent implements OnInit, AfterContentChecked {
+export class BsTooltipComponent extends AbstractPopupComponent implements OnInit, AfterContentChecked, OnDestroy {
     titleVisible = true;
     protected cssPrefix = 'bs-tooltip-';
 
@@ -23,9 +24,10 @@ export class BsTooltipComponent extends AbstractPopupComponent implements OnInit
     constructor(
         elementRef: ElementRef<HTMLElement>,
         config: BsTooltipConfigService,
-        helpers: BsHelpers
+        helpers: BsHelpers,
+        @Inject(DOCUMENT) protected readonly document: Document
     ) {
-        super(elementRef, config, helpers);
+        super(elementRef, config, helpers, document);
     }
 
     ngOnInit(): void {
@@ -36,5 +38,9 @@ export class BsTooltipComponent extends AbstractPopupComponent implements OnInit
 
     ngAfterContentChecked(): void {
         this.titleVisible = !!this.ngContent?.nativeElement.textContent?.trim().length;
+    }
+
+    ngOnDestroy(): void {
+        super.ngOnDestroy();
     }
 }
