@@ -4,7 +4,7 @@
  * License: MIT
  */
 
-import {ComponentRef, Inject, Injectable} from '@angular/core';
+import {ComponentRef, ElementRef, Inject, Injectable} from '@angular/core';
 import {BsModalBackdropComponent} from './bs-modal-backdrop.component';
 import {BsHelpers} from '../../helpers/bs-helpers.service';
 import {DOCUMENT} from '@angular/common';
@@ -13,7 +13,7 @@ import {DOCUMENT} from '@angular/common';
     providedIn: 'root'
 })
 export class BsModalBackdropService {
-    private backdropRef?: ComponentRef<BsModalBackdropComponent>;
+    private backdrops: WeakMap<ElementRef<HTMLElement>, ComponentRef<BsModalBackdropComponent>> = new WeakMap();
     private openModals = 0;
     private _isAnimated = false;
     get isAnimated(): boolean {
@@ -26,15 +26,19 @@ export class BsModalBackdropService {
     ) {
     }
 
-    show(backdrop: boolean, animate: boolean): Promise<void> {
+    show(
+        backdrop: boolean,
+        animate: boolean,
+        elementRef: ElementRef<HTMLElement>
+    ): Promise<void> {
         return new Promise<void>((resolve) => {
-            this.createBackdropComponent();
+            this.createBackdropComponent(elementRef);
             this.openModals++;
             this._isAnimated = animate;
             this.document.body.classList.add('modal-open');
             if (backdrop) {
                 setTimeout(() => { // wait for backdrop element to be fully drawn
-                    this.backdropRef?.instance.show();
+                    this.backdrops.get(elementRef)?.instance.show();
                     resolve();
                 });
             } else {
@@ -43,27 +47,36 @@ export class BsModalBackdropService {
         });
     }
 
-    private createBackdropComponent(): void {
-        if (typeof this.backdropRef !== 'undefined') {
-            return;
+    private createBackdropComponent(elementRef: ElementRef<HTMLElement>): void {
+        if (!this.backdrops.has(elementRef)) {
+            const backdropRef = this.helpers.createComponent(
+                BsModalBackdropComponent,
+                elementRef.nativeElement,
+                undefined,
+                'before'
+            );
+
+            (backdropRef.instance.elementRef.nativeElement.children[0] as HTMLElement).style.zIndex
+                = window.getComputedStyle(elementRef.nativeElement).zIndex;
+            this.backdrops.set(elementRef, backdropRef);
         }
-        this.backdropRef = this.helpers.createComponent(BsModalBackdropComponent, this.document.body);
     }
 
-    hide(): void {
+    hide(elementRef: ElementRef<HTMLElement>): void {
         this.openModals--;
         if (this.openModals < 0) {
             this.openModals = 0;
         }
-        if (this.openModals === 0) {
-            const callback = () => {
+        const callback = () => {
+            if (this.openModals === 0) {
                 this.document.body.classList.remove('modal-open');
             }
-            if (this.backdropRef) {
-                this.backdropRef.instance.hide().then(callback);
-            } else {
-                callback();
-            }
+        }
+
+        if (this.backdrops.has(elementRef)) {
+            this.backdrops.get(elementRef)?.instance.hide().then(callback);
+        } else {
+            callback();
         }
     }
 }

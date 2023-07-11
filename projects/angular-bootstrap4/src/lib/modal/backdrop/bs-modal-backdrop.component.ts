@@ -41,6 +41,7 @@ export class BsModalBackdropComponent {
                     resolve();
                 });
             } else {
+                backdropElement.style.display = 'none';
                 resolve();
             }
         });

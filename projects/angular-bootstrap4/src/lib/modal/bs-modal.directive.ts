@@ -53,11 +53,11 @@ export class BsModalDirective implements OnChanges, OnDestroy {
     };
 
     constructor(
-        private config: BsModalConfigService,
-        private backdropService: BsModalBackdropService,
-        private bsHelpers: BsHelpers,
-        private elementRef: ElementRef<HTMLElement>,
-        @Inject(DOCUMENT) private document: Document
+        private readonly config: BsModalConfigService,
+        private readonly backdropService: BsModalBackdropService,
+        private readonly bsHelpers: BsHelpers,
+        private readonly elementRef: ElementRef<HTMLElement>,
+        @Inject(DOCUMENT) private readonly document: Document
     ) {
         this.backdrop = this.config.backdrop;
         this.keyboard = this.config.keyboard;
@@ -131,7 +131,11 @@ export class BsModalDirective implements OnChanges, OnDestroy {
             this.elementRef.nativeElement.style.display = 'block';
             this.bsHelpers.reflow(this.elementRef.nativeElement);
             this.backdropService
-                .show(!!this.backdrop, this.elementRef.nativeElement.classList.contains('fade'))
+                .show(
+                    !!this.backdrop,
+                    this.elementRef.nativeElement.classList.contains('fade'),
+                    this.elementRef
+                )
                 .then(() => {
                     this.elementRef.nativeElement.classList.add('show');
                 });
@@ -145,7 +149,7 @@ export class BsModalDirective implements OnChanges, OnDestroy {
             this.elementRef.nativeElement.classList.remove('show');
 
             const callback = () => {
-                this.backdropService.hide();
+                this.backdropService.hide(this.elementRef);
                 this.elementRef.nativeElement.style.display = '';
             };
 

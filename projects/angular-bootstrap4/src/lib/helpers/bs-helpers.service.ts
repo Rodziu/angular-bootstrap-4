@@ -24,6 +24,8 @@ export interface IElementOffset {
 
 export type placement = 'top' | 'left' | 'right' | 'bottom' | string;
 
+export type createComponentAppendMode = 'into' | 'before' | 'after';
+
 @Injectable({
     providedIn: 'root'
 })
@@ -239,18 +241,28 @@ export class BsHelpers {
     createComponent<T>(
         component: Type<T>,
         appendTo: HTMLElement,
-        projectableNodes?: unknown[][]
+        projectableNodes?: unknown[][],
+        appendMode: createComponentAppendMode = 'into'
     ): ComponentRef<T> {
         const componentRef = this.componentFactoryResolver
             .resolveComponentFactory(component)
             .create(this.injector, projectableNodes);
 
         this.appRef.attachView(componentRef.hostView);
+        const componentHTML: HTMLElement = (componentRef.hostView as EmbeddedViewRef<T>).rootNodes[0];
 
-        appendTo.appendChild(
-            (componentRef.hostView as EmbeddedViewRef<T>)
-                .rootNodes[0] as HTMLElement
-        );
+        switch (appendMode) {
+            case 'into':
+                appendTo.appendChild(componentHTML);
+                break;
+            case 'before':
+                appendTo.before(componentHTML);
+                break;
+            case 'after':
+                appendTo.after(componentHTML);
+                break;
+        }
+
         return componentRef;
     }
 }
